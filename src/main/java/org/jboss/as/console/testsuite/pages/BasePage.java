@@ -50,7 +50,7 @@ public abstract class BasePage {
     }
 
     public void clickButton(String label) {
-        By selector = ByJQuery.selector("button#" + label + ", button:contains('" + label + ")");
+        By selector = ByJQuery.selector("button#" + label + ", button:contains('" + label + "')");
         WebElement button = browser.findElement(selector);
         button.click();
     }

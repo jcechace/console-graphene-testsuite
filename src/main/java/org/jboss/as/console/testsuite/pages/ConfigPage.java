@@ -4,6 +4,9 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.ConfigAreaFragment;
 import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
+import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
+import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -37,5 +40,14 @@ public class ConfigPage extends BasePage {
         By selector = By.xpath(selectionLabel + "/following::*[contains(@class, 'default-tabpanel')]");
 
         return selector;
+    }
+
+    public WizardWindow addResource() {
+        String label = PropUtils.get("config.shared.add.label");
+        clickButton(label);
+
+        WizardWindow wizard = Console.withBrowser(browser).openedWizard();
+
+        return wizard;
     }
 }

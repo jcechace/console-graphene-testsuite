@@ -9,8 +9,9 @@ import org.jboss.as.console.testsuite.util.PropUtils;
 public class ConfirmationWindow extends WindowFragment {
     public void confirm() {
         String label = PropUtils.get("modals.confirmation.confirm.label");
-        clickButton(label, true);
+        clickButton(label);
 
         waitUntilClosed();
+        closed = true;
     }
 }

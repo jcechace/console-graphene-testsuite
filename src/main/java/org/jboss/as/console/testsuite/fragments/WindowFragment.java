@@ -1,14 +1,16 @@
 package org.jboss.as.console.testsuite.fragments;
 
-import org.jboss.as.console.testsuite.fragments.shared.modals.ConfirmationWindow;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
+import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.as.console.testsuite.util.Editor;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.jboss.as.console.testsuite.util.Console;
-import org.jboss.as.console.testsuite.util.PropUtils;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jcechace on 18/02/14.
@@ -57,41 +59,23 @@ public class WindowFragment extends BaseFragment {
 
     public void cancel() {
         String label = PropUtils.get("modals.window.cancel.label");
-        clickButton(label, true);
+        clickButton(label);
 
         waitUntilClosed();
         closed = true;
     }
 
-
-    public WindowFragment clickButton(String label, boolean close) {
-        By selector = ByJQuery.selector("button:contains(" + label + ")");
+    public void clickButton(String label) {
+        By selector = ByJQuery.selector("button:contains(" + label + "):visible");
         WebElement button = root.findElement(selector);
 
         button.click();
-        if (close) {
-            waitUntilClosed();
-            closed = true;
-        }
-        if (isClosed()) {
-            return null;
-        }
-
-        return this;
     }
 
-    public <T extends WindowFragment> T clickButton(String label, Class<T> followingWindowType) {
-        By selector = ByJQuery.selector("button:contains(" + label + ")");
-        WebElement button = root.findElement(selector);
+    public Editor getEditor() {
+        Editor editor = Graphene.createPageFragment(Editor.class, root);
 
-        button.click();
-        if (isClosed()) {
-            return null;
-        }
-
-        Console console = Console.withBrowser(browser);
-        T followingWindow = console.openedWindow(followingWindowType);
-        return  followingWindow;
+        return editor;
     }
 
     public String getHeadTitle() {
