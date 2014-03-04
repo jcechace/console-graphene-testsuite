@@ -13,6 +13,7 @@ import org.openqa.selenium.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by jcechace on 18/02/14.
@@ -73,7 +74,7 @@ public class Console {
 
 
     /**
-     * Retrieves of currently opened popup window.
+     * Retrieves currently opened window using specified selector.
      *
      * @param clazz
      * @param selector
@@ -89,12 +90,52 @@ public class Console {
         return window;
     }
 
+    /**
+     * Retrieves currently opened window using default selector.
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public <T extends WindowFragment> T openedWindow(Class<T> clazz) {
         return openedWindow(clazz, WindowFragment.ROOT_SELECTOR);
+
+    }
+
+
+    /**
+     * Retrieves currently opened window with specified head title using default selector.
+     *
+     * @param headTitle
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public <T extends WindowFragment> T openedWindow(String headTitle, Class<T> clazz) {
+        By selector = WindowFragment.ROOT_SELECTOR;
+        Graphene.waitGui().until().element(selector).is().present();
+
+        List<WebElement> windowEelements = browser.findElements(selector);
+        T window = null;
+
+        for (WebElement el : windowEelements) {
+            window  = Graphene.createPageFragment(clazz, el);
+            if (window.getHeadTitle().equals(headTitle)) {
+                return window;
+            }
+        }
+        // Window with given title not found
+        throw new NoSuchElementException("Unable to find window with title '"+ headTitle
+                + "' using " + selector);
     }
 
     public WindowFragment openedWindow() {
         return openedWindow(WindowFragment.class, WindowFragment.ROOT_SELECTOR);
+    }
+
+
+    public <T extends WizardWindow> T openedWizard(Class<T> clazz) {
+        return openedWindow(clazz);
     }
 
     public WizardWindow openedWizard() {
@@ -102,22 +143,7 @@ public class Console {
     }
 
 
-    public WebElement checkbox(String idSuffix, WebElement root) {
-        return findInputElement("checkbox", idSuffix, root);
-    }
 
-    public WebElement text(String idSuffix, WebElement root) {
-        return findInputElement("text", idSuffix, root);
-    }
-
-
-    public WebElement findInputElement(String type, String idSuffixOrName, WebElement root) {
-        String byIdSelector = "input[type='" + type + "'][id$='" + idSuffixOrName + "'], ";
-        String byNameSelector = "input[type='" + type + "'][name='" + idSuffixOrName + "'], ";
-        By selector = ByJQuery.selector(byIdSelector + ", " + byNameSelector);
-
-        return findElement(selector, root);
-    }
 
     public WebElement findElement(By selector, WebElement root) {
         WebElement element = null;

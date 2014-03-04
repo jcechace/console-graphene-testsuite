@@ -7,6 +7,7 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +98,8 @@ public class GoogleAnalyticsTestCase {
 
 
     private Cookie getCookie() {
-        Cookie cookie = browser.manage().getCookieNamed("as7_ui_analytics");
+        String name = PropUtils.get("settings.analytics.cookie");
+        Cookie cookie = browser.manage().getCookieNamed(name);
         return cookie;
     }
 

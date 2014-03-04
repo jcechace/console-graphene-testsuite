@@ -9,6 +9,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.datasources.ConnectionConfig;
 import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceConfigArea;
 import org.jboss.as.console.testsuite.fragments.config.datasources.TestConnectionWindow;
+import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
+import org.jboss.as.console.testsuite.util.Editor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,10 @@ import org.openqa.selenium.WebElement;
  */
 @RunWith(Arquillian.class)
 public class TestConnectionTestCase {
+    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+    private static final String USERNAME = "sa";
+    private static final String PASSWORD = "sa";
+
     @Drone
     private WebDriver browser;
 
@@ -51,7 +57,24 @@ public class TestConnectionTestCase {
 
     @Test
     public void validInWizard() {
-        datasourcesPage.addDatasource();
+        WizardWindow wizard = datasourcesPage.addResource();
+        Editor editor = wizard.getEditor();
+
+        String name = RandomStringUtils.randomAlphanumeric(5);
+        editor.text("name", name);
+        editor.text("jndiName", "java:/" + name);
+
+        wizard.next();
+
+        wizard.next();
+        editor.text("connectionUrl", URL);
+        editor.text("username", USERNAME);
+        editor.text("password", PASSWORD);
+
+        wizard.clickButton("Test Connection");
+
+        System.out.println("aasdadsa");
+
     }
 
     private String createInvalidDatasource() {

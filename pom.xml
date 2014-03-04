@@ -10,7 +10,7 @@
 
     <properties>
         <browser>firefox</browser>
-        <jboss.dist>/home/jcechace/tools/eap/wildfly/wildfly-8.0.1.Final-SNAPSHOT</jboss.dist>
+        <jboss.dist>/Users/jcechace/Projects/following/wildfly/build/target/wildfly-8.0.1.Final-SNAPSHOT</jboss.dist>
         <surefire.version>2.15</surefire.version>
     </properties>
 

@@ -14,21 +14,15 @@ public class SettingsWindow extends WindowFragment {
 
     public boolean getAnalytics() {
         String id = PropUtils.get("settings.analytics.id");
-        By selector = ByJQuery.selector("input[type='checkbox'][id$='" + id +"']");
-        WebElement checkbox =  getRoot().findElement(selector);
 
-        return checkbox.isSelected();
+
+        return getEditor().checkbox(id);
     }
 
     public boolean setAnalytics(boolean val) {
         boolean old = getAnalytics();
-
-        if (old != val) {
-            String id = PropUtils.get("settings.analytics.id");
-            By selector = ByJQuery.selector("input[type='checkbox'][id$='" + id +"']");
-            WebElement checkbox =  getRoot().findElement(selector);
-            checkbox.click();
-        }
+        String id = PropUtils.get("settings.analytics.id");
+        getEditor().checkbox(id, val);
 
         return old;
     }
@@ -43,8 +37,10 @@ public class SettingsWindow extends WindowFragment {
 
     public ConfirmationWindow saveExpectingConfigrmation() {
         String label = PropUtils.get("modals.window.save.label");
-        ConfirmationWindow confirmWindow = clickButton(label, ConfirmationWindow.class);
 
+        clickButton(label);
+        ConfirmationWindow confirmWindow = Console.withBrowser(browser)
+                .openedWindow(ConfirmationWindow.class);
         closed = true;
 
         return confirmWindow;
