@@ -3,6 +3,8 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.openqa.selenium.*;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  *  This class is pure EVIL and as such any method which uses it is in need of refactoring.
  *
@@ -37,5 +39,15 @@ public class Workaround {
                 }
             }
         } while (done == false && attempts > 0);
+    }
+
+    // TODO: using flat wait due to IOOBE in fluent waiting API
+    public void waitUntilWindowIsClosed(int windowCount, boolean fail) {
+        Graphene.waitGui().withTimeout(1, TimeUnit.SECONDS);
+        int newWindowCount = Console.withBrowser(browser).getWindowCount();
+        // no window was closed and method is supposed to fail
+        if (fail && newWindowCount >=  windowCount) {
+            throw new TimeoutException();
+        }
     }
 }
