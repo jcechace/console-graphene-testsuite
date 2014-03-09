@@ -8,26 +8,22 @@ import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.datasources.ConnectionConfig;
 import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceConfigArea;
+import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceWizard;
 import org.jboss.as.console.testsuite.fragments.config.datasources.TestConnectionWindow;
-import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.util.Editor;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.jboss.as.console.testsuite.pages.config.DatasourcesPage;
 import org.jboss.as.console.testsuite.util.Console;
-import org.openqa.selenium.WebElement;
 
 /**
  * Created by jcechace on 21/02/14.
  */
 @RunWith(Arquillian.class)
 public class TestConnectionTestCase {
-    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
-    private static final String USERNAME = "sa";
-    private static final String PASSWORD = "sa";
-
     @Drone
     private WebDriver browser;
 
@@ -40,68 +36,112 @@ public class TestConnectionTestCase {
         Console.withBrowser(browser).waitUntilLoaded();
     }
 
+    @After
+    public void afer() {
+        browser.navigate().refresh();
+    }
+
     @Test
     public void validDatasource() {
-        testConnectionAndAssert("ExampleDS", true);
+        testConnection("ExampleDS", true);
     }
 
     @Test
     public void invalidDatasource() {
         String name = createInvalidDatasource();
         try {
-            testConnectionAndAssert(name, false);
+            testConnection(name, false);
         } finally {
-            removeInvalidDatasource(name);
+            removeInvalidDatasource(name, false);
         }
     }
 
     @Test
     public void validInWizard() {
-        WizardWindow wizard = datasourcesPage.addResource();
-        Editor editor = wizard.getEditor();
-
-        String name = RandomStringUtils.randomAlphanumeric(5);
-        editor.text("name", name);
-        editor.text("jndiName", "java:/" + name);
-
-        wizard.next();
-
-        wizard.next();
-        editor.text("connectionUrl", URL);
-        editor.text("username", USERNAME);
-        editor.text("password", PASSWORD);
-
-        wizard.clickButton("Test Connection");
-
-        System.out.println("aasdadsa");
-
+       String name = RandomStringUtils.randomAlphabetic(6);
+       testConnectionInWizard(name, "jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1", null, null, true);
     }
+
+    @Test
+    public void invalidInWizard() {
+        String name = RandomStringUtils.randomAlphabetic(6);
+        testConnectionInWizard(name, "invalidUrl", null, null, false);
+    }
+
+    @Test
+    public void validXADatasource() {
+        datasourcesPage.switchTab("XA Datasources");
+
+        String name = createValidXADatasource();
+        testConnection(name, true);
+    }
+
 
     private String createInvalidDatasource() {
         String name = RandomStringUtils.randomAlphanumeric(5);
         // TODO: implement me;
         System.err.println(name);
-        return "aaa";
+        return "testds";
     }
 
-    private void removeInvalidDatasource(String name) {
+    private void removeInvalidDatasource(String name, boolean xa) {
         // TODO : implement me;
     }
 
-    private void testConnectionAndAssert(String name, boolean expected) {
+    private String createValidXADatasource() {
+        return "testxads";
+    }
+
+    private String createInvalidXADatasource() {
+        return "testxads2";
+    }
+
+    private void assertNotExists(String name) {
+        // TODO: impelement me;
+    }
+
+
+    private void testConnection(String name, boolean expected) {
         datasourcesPage.selectByName(name);
 
         DatasourceConfigArea config = datasourcesPage.getConfig();
         ConnectionConfig connection = config.connectionConfig();
         TestConnectionWindow window = connection.testConnection();
 
-        boolean success = window.isSuccessful();
+        assertConnectionTest(window, expected);
+    }
+
+    private void testConnectionInWizard(String name, String url, String username,
+                                        String password, boolean expected) {
+        DatasourceWizard wizard = datasourcesPage.addResource();
+        Editor editor = wizard.getEditor();
+
+        editor.text("name", name);
+        editor.text("jndiName", "java:/" + name);
+
+        wizard.next();
+
+        wizard.next();
+        editor.text("connectionUrl", url);
+        if (username != null) {
+            editor.text("username", username);
+        }
+        if (password != null){
+            editor.password("password", password);
+        }
+
+        assertConnectionTest(wizard.testConnection(), expected);
+        assertNotExists(name);
+    }
+
+    private void assertConnectionTest(TestConnectionWindow window, boolean expected) {
+        boolean result = window.isSuccessful();
         window.close();
 
         if (expected) {
-            Assert.assertTrue("Connection test was expected to succeed", success);
+            Assert.assertTrue("Connection test was expected to succeed", result);
         } else {
-            Assert.assertFalse("Connection test was expected to fail", success);
+            Assert.assertFalse("Connection test was expected to fail", result);
         }
     }
 }
