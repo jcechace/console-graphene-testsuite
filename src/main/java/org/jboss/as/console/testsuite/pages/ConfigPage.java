@@ -15,39 +15,61 @@ import org.openqa.selenium.WebElement;
  */
 public class ConfigPage extends BasePage {
     public ResourceTableFragment getResourceTable() {
-        By selector = ByJQuery.selector(".default-cell-table[role='grid']");
-        WebElement tableRoot =  browser.findElement(selector);
+        By selector = ByJQuery.selector(".default-cell-table[role='grid']:visible");
+        WebElement tableRoot =  getContentRoot().findElement(selector);
         ResourceTableFragment table = Graphene.createPageFragment(ResourceTableFragment.class, tableRoot);
 
         return table;
     }
 
+    /**
+     * Returns the ConfigArea portion of page as given implementation.
+     * Not reliable - you might need to override this method.
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public <T extends ConfigAreaFragment> T getConfig(Class<T> clazz) {
         By selector = getConfigSelector(); // TODO: replace with proper selector once there is a usable class
-        WebElement configRoot = browser.findElement(selector);
+        WebElement configRoot = getContentRoot().findElement(selector);
         T config = Graphene.createPageFragment(clazz, configRoot);
 
         return config;
     }
 
+    /**
+     * Returns the default implementation of ConfigArea portion of page.
+     * Not reliable - you might need to override this method.
+     *
+     * @return
+     */
     public ConfigAreaFragment getConfig() {
        return getConfig(ConfigAreaFragment.class);
     }
 
     // TODO: There is no id or usable class on config tabpane - thus this workaround
+    // TODO: Not reliable!
     private By getConfigSelector() {
-        String selectionLabel = "//div[contains(@class, 'content-group-label') and contains(text(), 'Selection')]";
-        By selector = By.xpath(selectionLabel + "/following::*[contains(@class, 'default-tabpanel')]");
+        String selectionLabel =
+                ".//div[contains(@class, 'content-group-label') and contains(text(), 'Selection')]";
+        By selector =
+                By.xpath(selectionLabel + "/following::*[contains(@class, 'default-tabpanel')]");
 
         return selector;
     }
 
-    public WizardWindow addResource() {
+
+    public <T extends WizardWindow> T addResource(Class<T> clazz) {
         String label = PropUtils.get("config.shared.add.label");
         clickButton(label);
 
-        WizardWindow wizard = Console.withBrowser(browser).openedWizard();
+        T wizard = Console.withBrowser(browser).openedWizard(clazz);
 
         return wizard;
+    }
+
+    public WizardWindow addResource() {
+        return addResource(WizardWindow.class);
     }
 }
