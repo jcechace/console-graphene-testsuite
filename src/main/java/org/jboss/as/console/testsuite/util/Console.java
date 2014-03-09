@@ -1,18 +1,16 @@
 package org.jboss.as.console.testsuite.util;
 
-import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.graphene.Graphene;
-import org.jboss.arquillian.graphene.context.GrapheneContext;
-import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.fragments.PopUpFragment;
+import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
 import org.jboss.as.console.testsuite.fragments.WindowFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,12 +37,25 @@ public class Console {
         Graphene.waitAjax().until().element(By.className("header-panel")).is().present();
     }
 
+    public void refresh() {
+        browser.navigate().refresh();
+        waitUntilFinished();
+    }
+
     /**
      * Wait until content is loaded.
      */
     public void waitForContent() {
         // TODO: might be unreliable
         Graphene.waitAjax().until().element(By.className("content-header-label")).is().present();
+    }
+
+    /**
+     *  Waits until operation is finished (progress bar is hidden)
+     */
+    public void waitUntilFinished() {
+        By selector = By.className("hal-ProgressElement");
+        Graphene.waitModel().until().element(selector).is().not().visible();
     }
 
     /**
@@ -133,6 +144,14 @@ public class Console {
         return openedWindow(WindowFragment.class, WindowFragment.ROOT_SELECTOR);
     }
 
+    public int getWindowCount(By selector) {
+        List<WebElement> elements = browser.findElements(selector);
+        return elements.size();
+    }
+
+    public int getWindowCount() {
+        return getWindowCount(WindowFragment.ROOT_SELECTOR);
+    }
 
     public <T extends WizardWindow> T openedWizard(Class<T> clazz) {
         return openedWindow(clazz);
@@ -143,7 +162,21 @@ public class Console {
     }
 
 
+    public WebElement getTableRootByHeaderCell(String label, WebElement root) {
+        String cssClass = PropUtils.get("tables.default.class");
+        String tableSelector = "table[contains(@class, ': + cssClass + ')";
+        String headerSelector = "//th[contains(text(), '" + label + "']";
+        By selector = By.xpath(".//" +tableSelector + headerSelector +
+                "/descendant::" + tableSelector);
 
+        WebElement tableRoot = findElement(selector, root);
+
+        return tableRoot;
+    }
+
+    public WebElement getTableRootByHeaderCell(String label) {
+        return getTableRootByHeaderCell(label, null);
+    }
 
     public WebElement findElement(By selector, WebElement root) {
         WebElement element = null;
