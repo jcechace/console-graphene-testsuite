@@ -42,16 +42,36 @@ public abstract class BasePage {
         return footer;
     }
 
-    public PopUpFragment getPopup() {
-        WebElement popupRoot =  browser.findElement(PopUpFragment.ROOT_SELECTOR);
-        PopUpFragment popup = Graphene.createPageFragment(PopUpFragment.class, popupRoot);
-
-        return popup;
-    }
 
     public void clickButton(String label) {
         By selector = ByJQuery.selector("button#" + label + ", button:contains('" + label + "')");
-        WebElement button = browser.findElement(selector);
+        WebElement button = getContentRoot().findElement(selector);
         button.click();
+    }
+
+    public void switchTab(String identifier) {
+        String idSelector = ".gwt-TabLayoutPanelTab[id$='" + identifier + "']";
+        String labelSelector = ".gwt-TabLayoutPanelTab:contains('" + identifier + "')";
+        By selector = ByJQuery.selector(idSelector + ", " + labelSelector);
+
+        WebElement tab = browser.findElement(selector);
+
+        tab.click();
+
+        String idSelectorSelected = ".gwt-TabLayoutPanelTab-selected[id$='" + identifier + "']";
+        String labelSelectorSelected = ".gwt-TabLayoutPanelTab-selected:contains('" + identifier + "')";
+
+        By selectorCurrent = ByJQuery.selector(idSelectorSelected + ", " + labelSelectorSelected);
+
+        Graphene.waitAjax().until().element(selectorCurrent).is().present();
+
+    }
+
+    public WebElement getContentRoot() {
+        String cssClass = "gwt-TabLayoutPanelContent";
+        By selector = ByJQuery.selector("." + cssClass + ":visible");
+        WebElement contentRoot = browser.findElement(selector);
+
+        return contentRoot;
     }
 }
