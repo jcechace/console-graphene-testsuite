@@ -3,6 +3,7 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
+import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -48,6 +49,23 @@ public class Editor extends BaseFragment {
         return input.getAttribute("value");
     }
 
+    /**
+     * Returns a password input with given identifier
+     *
+     * @param identifier
+     * @return a password input
+     */
+    public WebElement getPassword(String identifier) {
+        return findInputElement("password", identifier);
+    }
+
+    public void password(String identifier, String value) {
+        WebElement input = getPassword(identifier);
+        input.clear();
+        Graphene.waitGui().until().element(input).value().equalTo("");
+        input.sendKeys(value);
+        System.err.println(input.getText());
+    }
 
     /**
      * Returns a checkbox with given identifier.
