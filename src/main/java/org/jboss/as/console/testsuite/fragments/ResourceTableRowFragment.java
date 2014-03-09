@@ -17,7 +17,7 @@ public class ResourceTableRowFragment extends BaseFragment {
         getCell(0).click();
     }
 
-    private WebElement getCell(int index) {
+    public WebElement getCell(int index) {
         By selector = By.className("cellTableCell");
         List<WebElement> cells = root.findElements(selector);
 
