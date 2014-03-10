@@ -10,8 +10,11 @@
 
     <properties>
         <browser>firefox</browser>
-        <jboss.dist>/Users/jcechace/Projects/following/wildfly/build/target/wildfly-8.0.1.Final-SNAPSHOT</jboss.dist>
+        <!--jboss.dist>/Users/jcechace/Projects/following/wildfly/build/target/wildfly-8.0.1.Final-SNAPSHOT</jboss.dist-->
+        <jboss.dist>/home/mvelas/JBossEAP/jboss-eap-6.2</jboss.dist>
+        <!--jboss.dist>/home/mvelas/wildfly/wildfly-8.0.0.Final</jboss.dist-->
         <surefire.version>2.15</surefire.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -96,8 +99,22 @@
                 <dependency>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <version>8.0.1.Final-SNAPSHOT</version>
+                    <version>8.0.0.Final</version>
                     <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>wildfly-domain</id>
+            <properties>
+                <arquillian.launch>wildfy-domain</arquillian.launch>
+                <jboss.home>${jboss.dist}</jboss.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-domain-managed</artifactId>
+                    <version>8.0.0.Final</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -117,10 +134,32 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>eap-domain</id>
+            <properties>
+                <arquillian.launch>eap-domain</arquillian.launch>
+                <jboss.home>${jboss.dist}</jboss.home>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-domain-managed</artifactId>
+                    <version>7.3.2.Final-redhat-1</version>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -134,7 +173,6 @@
                     <argLine>${argLine}</argLine>
                 </configuration>
             </plugin>
-
         </plugins>
         <testResources>
             <testResource>
@@ -152,6 +190,10 @@
 
     <repositories>
         <repository>
+            <id>JBoss repository</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>EAP latest repository</id>
             <url>http://download.lab.bos.redhat.com/brewroot/repos/jb-eap-6-rhel-6-build/latest/maven/</url>
         </repository>
@@ -164,6 +206,14 @@
             <id>jboss-qa-snapshots</id>
             <name>JBoss QA snapshot repository</name>
             <url>http://repository.engineering.redhat.com/nexus/content/repositories/jboss-qa-snapshots</url>
+        </repository>
+        <repository>
+            <id>java-net</id>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>http://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 </project>
