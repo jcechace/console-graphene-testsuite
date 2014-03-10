@@ -30,6 +30,22 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
         </configuration>
     </container>
 
+    <container qualifier="wildfly-domain">
+        <configuration>
+            <property name="jbossHome">${jboss.home}</property>
+            <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
+                -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
+            </property>
+            <property name="allowConnectingToRunningServer">true</property>
+            <property name="outputToConsole">true</property>
+
+            <!--property name="domainConfig">${jboss.domain.default.config:domain.xml}</property>
+            <property name="hostConfig">${jboss.host.default.config:host.xml}</property-->
+
+            <property name="managementAddress">${node0:127.0.0.1}</property>
+            <property name="managementPort">${as.managementPort:9999}</property>
+        </configuration>
+    </container>
 
     <container qualifier="eap">
         <configuration>
@@ -58,6 +74,23 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
     In the future, Arquillian should capable of injecting it into @ArquillianResource File or such. -->
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
+            <property name="managementAddress">${node0:127.0.0.1}</property>
+            <property name="managementPort">${as.managementPort:9999}</property>
+        </configuration>
+    </container>
+
+    <container qualifier="eap-domain">
+        <configuration>
+            <property name="jbossHome">${jboss.home}</property>
+            <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
+                -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
+            </property>
+            <property name="allowConnectingToRunningServer">true</property>
+            <property name="outputToConsole">true</property>
+
+            <!--property name="domainConfig">${jboss.domain.default.config:domain.xml}</property>
+            <property name="hostConfig">${jboss.host.default.config:host.xml}</property-->
+
             <property name="managementAddress">${node0:127.0.0.1}</property>
             <property name="managementPort">${as.managementPort:9999}</property>
         </configuration>
