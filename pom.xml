@@ -10,11 +10,7 @@
 
     <properties>
         <browser>firefox</browser>
-        <!--jboss.dist>/Users/jcechace/Projects/following/wildfly/build/target/wildfly-8.0.1.Final-SNAPSHOT</jboss.dist-->
-        <jboss.dist>/home/mvelas/JBossEAP/jboss-eap-6.2</jboss.dist>
-        <!--jboss.dist>/home/mvelas/wildfly/wildfly-8.0.0.Final</jboss.dist-->
         <surefire.version>2.15</surefire.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -108,7 +104,7 @@
             <id>wildfly-domain</id>
             <properties>
                 <arquillian.launch>wildfy-domain</arquillian.launch>
-                <jboss.home>${jboss.dist}</jboss.home>
+                <jboss.dist>${jboss.dist}</jboss.dist>
             </properties>
             <dependencies>
                 <dependency>
@@ -138,7 +134,7 @@
             <id>eap-domain</id>
             <properties>
                 <arquillian.launch>eap-domain</arquillian.launch>
-                <jboss.home>${jboss.dist}</jboss.home>
+                <jboss.dist>${jboss.dist}</jboss.dist>
             </properties>
             <dependencies>
                 <dependency>
@@ -168,7 +164,7 @@
                     <systemPropertyVariables>
                         <browser>${browser}</browser>
                         <arquillian.launch>${arquillian.launch}</arquillian.launch>
-                        <jboss.home>${jboss.dist}</jboss.home>
+                        <jboss.dist>${jboss.dist}</jboss.dist>
                     </systemPropertyVariables>
                     <argLine>${argLine}</argLine>
                 </configuration>

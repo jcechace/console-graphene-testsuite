@@ -12,7 +12,7 @@
 
     <container qualifier="wildfly">
         <configuration>
-            <property name="jbossHome">${jboss.home}</property>
+            <property name="jbossHome">${jboss.dist}</property>
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}":
             </property>
@@ -32,7 +32,7 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
 
     <container qualifier="wildfly-domain">
         <configuration>
-            <property name="jbossHome">${jboss.home}</property>
+            <property name="jbossHome">${jboss.dist}</property>
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
@@ -49,7 +49,7 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
 
     <container qualifier="eap">
         <configuration>
-            <property name="jbossHome">${jboss.home}</property>
+            <property name="jbossHome">${jboss.dist}</property>
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
@@ -65,7 +65,7 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
 
     <container qualifier="eap-manual" mode="manual">
         <configuration>
-            <property name="jbossHome">${jboss.home}</property>
+            <property name="jbossHome">${jboss.dist}</property>
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
@@ -81,7 +81,7 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
 
     <container qualifier="eap-domain">
         <configuration>
-            <property name="jbossHome">${jboss.home}</property>
+            <property name="jbossHome">${jboss.dist}</property>
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
