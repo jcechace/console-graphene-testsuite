@@ -59,14 +59,18 @@ public class ConfigPage extends BasePage {
         return selector;
     }
 
-
-    public <T extends WizardWindow> T addResource(Class<T> clazz) {
-        String label = PropUtils.get("config.shared.add.label");
+    public <T extends WizardWindow> T addResource(Class<T> clazz, String label) {
         clickButton(label);
 
         T wizard = Console.withBrowser(browser).openedWizard(clazz);
 
         return wizard;
+    }
+
+
+    public <T extends WizardWindow> T addResource(Class<T> clazz) {
+        String label = PropUtils.get("config.shared.add.label");
+        return addResource(clazz, label);
     }
 
     public WizardWindow addResource() {
