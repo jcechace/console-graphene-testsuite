@@ -3,7 +3,6 @@ package org.jboss.as.console.testsuite.pages;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
-import org.jboss.as.console.testsuite.fragments.PopUpFragment;
 import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
@@ -24,7 +23,7 @@ public abstract class BasePage {
     @FindByJQuery("#header-links-section")
     private HeaderTabs headerNavigation;
 
-    @FindByJQuery("#main-content-area div[role='navigation'] .gwt-Tree")
+    @FindByJQuery("#main-content-area div[role='navigation']")
     private NavigationFragment navigation;
 
     @FindBy(className = "footer-panel")

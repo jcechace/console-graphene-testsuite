@@ -104,7 +104,6 @@
             <id>wildfly-domain</id>
             <properties>
                 <arquillian.launch>wildfy-domain</arquillian.launch>
-                <jboss.dist>${jboss.dist}</jboss.dist>
             </properties>
             <dependencies>
                 <dependency>
@@ -134,7 +133,6 @@
             <id>eap-domain</id>
             <properties>
                 <arquillian.launch>eap-domain</arquillian.launch>
-                <jboss.dist>${jboss.dist}</jboss.dist>
             </properties>
             <dependencies>
                 <dependency>
@@ -202,14 +200,6 @@
             <id>jboss-qa-snapshots</id>
             <name>JBoss QA snapshot repository</name>
             <url>http://repository.engineering.redhat.com/nexus/content/repositories/jboss-qa-snapshots</url>
-        </repository>
-        <repository>
-            <id>java-net</id>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <url>http://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 </project>
