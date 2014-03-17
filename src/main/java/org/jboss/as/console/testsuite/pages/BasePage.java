@@ -1,13 +1,12 @@
 package org.jboss.as.console.testsuite.pages;
 
-import org.jboss.arquillian.graphene.findby.ByJQuery;
-import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
-import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
-import org.jboss.as.console.testsuite.fragments.PopUpFragment;
-import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
+import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.arquillian.graphene.findby.FindByJQuery;
+import org.jboss.as.console.testsuite.fragments.NavigationFragment;
+import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
+import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -69,7 +68,8 @@ public abstract class BasePage {
 
     public WebElement getContentRoot() {
         String cssClass = "gwt-TabLayoutPanelContent";
-        By selector = ByJQuery.selector("." + cssClass + ":visible");
+        String cssClass2 = "split-center";
+        By selector = ByJQuery.selector("." + cssClass + ":visible, ." + cssClass2);
         WebElement contentRoot = browser.findElement(selector);
 
         return contentRoot;
