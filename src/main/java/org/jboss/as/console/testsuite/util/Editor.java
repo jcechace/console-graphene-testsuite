@@ -3,10 +3,11 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
-import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import java.io.File;
 
 /**
  * Created by jcechace on 03/03/14.
@@ -66,6 +67,28 @@ public class Editor extends BaseFragment {
         input.sendKeys(value);
         System.err.println(input.getText());
     }
+
+    /**
+     * Returns file input element with a given identifier
+     *
+     * @param identifier
+     * @return a file input element
+     */
+    public WebElement getFileInputElement(String identifier) {
+        return findInputElement("file", identifier);
+    }
+
+    /**
+     *
+     * @param fileToUpload
+     * @param identifier
+     */
+    public void uploadFile(File fileToUpload, String identifier) {
+        WebElement fileInput = getFileInputElement(identifier);
+        fileInput.sendKeys(fileToUpload.getAbsolutePath());
+        Graphene.waitGui().until().element(fileInput).value().equalTo(fileToUpload.getAbsolutePath());
+    }
+
 
     /**
      * Returns a checkbox with given identifier.
