@@ -6,6 +6,8 @@ import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -14,6 +16,8 @@ import java.io.File;
  */
 public class Editor extends BaseFragment {
 
+    private static final Logger log = LoggerFactory.getLogger(Editor.class);
+    
     /**
      * Returns either a input of type text or textarea element with given identifier (name or id).
      *
@@ -65,7 +69,7 @@ public class Editor extends BaseFragment {
         input.clear();
         Graphene.waitGui().until().element(input).value().equalTo("");
         input.sendKeys(value);
-        System.err.println(input.getText());
+        log.debug(input.getText());
     }
 
     /**
