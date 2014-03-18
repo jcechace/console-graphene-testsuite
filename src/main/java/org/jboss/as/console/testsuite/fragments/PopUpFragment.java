@@ -12,7 +12,7 @@ public class PopUpFragment extends BaseFragment {
     public static final By ROOT_SELECTOR = By.className(PropUtils.get("modals.popup.class"));
 
     public void clickLinkByLabel(String label) {
-        ByJQuery selector = ByJQuery.selector(".inline-link a:contains:contains('" + label + "')");
+        ByJQuery selector = ByJQuery.selector(".inline-link a:contains('" + label + "')");
         WebElement link = root.findElement(selector);
         link.click();
     }
