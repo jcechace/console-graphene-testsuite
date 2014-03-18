@@ -19,5 +19,13 @@ public class WizardWindow extends WindowFragment {
         Graphene.waitModel().withTimeout(2, TimeUnit.SECONDS);
     }
 
+    public void finish() {
+        String label = PropUtils.get("modals.wizard.finish.label");
+        clickButton(label);
+
+        // TODO: possible refactoring to dynamic wait
+        Graphene.waitModel().withTimeout(2, TimeUnit.SECONDS);
+    }
+
 
 }
