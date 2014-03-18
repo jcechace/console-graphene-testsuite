@@ -18,13 +18,18 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.jboss.as.console.testsuite.pages.config.DatasourcesPage;
 import org.jboss.as.console.testsuite.util.Console;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+        
 /**
  * Created by jcechace on 21/02/14.
  */
 @RunWith(Arquillian.class)
 public class TestConnectionTestCase {
-    @Drone
+    
+    private static final Logger log = LoggerFactory.getLogger(TestConnectionTestCase.class);
+    
+     @Drone
     private WebDriver browser;
 
     @Page
@@ -80,7 +85,7 @@ public class TestConnectionTestCase {
     private String createInvalidDatasource() {
         String name = RandomStringUtils.randomAlphanumeric(5);
         // TODO: implement me;
-        System.err.println(name);
+        log.debug(name);
         return "testds";
     }
 
