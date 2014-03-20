@@ -6,7 +6,9 @@
 
     <extension qualifier="webdriver">
         <property name="browser">${browser}</property>
-        <!--<property name="waitGuiInterval">2</property>-->
+        <property name="waitGuiInterval">2</property>
+        <property name="waitAjaxInterval">4</property>
+        <property name="waitModelInterval">10</property>
     </extension>
 
 
