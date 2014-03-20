@@ -5,10 +5,10 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.as.console.testsuite.fragments.PatchErrorPanelFragment;
+import org.jboss.as.console.testsuite.fragments.config.patching.PatchErrorPanelFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
-import org.jboss.as.console.testsuite.pages.runtime.PatchingWizardWindow;
+import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.qa.management.cli.CliClient;
@@ -123,7 +123,7 @@ public class ApplyPatchTestCase {
 
 
     public void applyPatch(File patchFile) {
-        PatchingWizardWindow applyPatchWizard = patchManagementPage.applyNewPatch();
+        PatchingWizard applyPatchWizard = patchManagementPage.applyNewPatch();
         applyPatchWizard.getEditor().uploadFile(patchFile, PropUtils.get("runtime.patching.apply.fileupload.name"));
         applyPatchWizard.next(); // only confirmation
         applyPatchWizard.next();

@@ -1,6 +1,7 @@
 package org.jboss.as.console.testsuite.pages.runtime;
 
 import org.jboss.arquillian.graphene.page.Location;
+import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
 import org.jboss.as.console.testsuite.pages.ConfigPage;
 import org.jboss.as.console.testsuite.util.PropUtils;
 
@@ -14,13 +15,13 @@ public class PatchManagementPage extends ConfigPage {
         getResourceTable().selectRowByText(0, name);
     }
 
-    public PatchingWizardWindow applyNewPatch() {
-        return addResource(PatchingWizardWindow.class, PropUtils.get("runtime.patching.apply.label"));
+    public PatchingWizard applyNewPatch() {
+        return addResource(PatchingWizard.class, PropUtils.get("runtime.patching.apply.label"));
     }
 
-    public PatchingWizardWindow rollbackPatch(String patchId) {
+    public PatchingWizard rollbackPatch(String patchId) {
         selectByName(patchId);
-        return addResource(PatchingWizardWindow.class, PropUtils.get("runtime.patching.rollback.label"));
+        return addResource(PatchingWizard.class, PropUtils.get("runtime.patching.rollback.label"));
     }
 
 }

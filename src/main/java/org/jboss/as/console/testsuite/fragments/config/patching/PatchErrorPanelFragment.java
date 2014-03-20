@@ -1,6 +1,7 @@
-package org.jboss.as.console.testsuite.fragments;
+package org.jboss.as.console.testsuite.fragments.config.patching;
 
 import org.jboss.arquillian.graphene.findby.ByJQuery;
+import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 
