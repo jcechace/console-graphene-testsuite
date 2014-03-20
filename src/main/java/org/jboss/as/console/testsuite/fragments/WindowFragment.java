@@ -11,9 +11,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by jcechace on 18/02/14.
  */
@@ -89,6 +86,7 @@ public class WindowFragment extends BaseFragment {
 
     public void clickButton(String label) {
         By selector = ByJQuery.selector("button:contains(" + label + "):visible");
+        Graphene.waitGui().until().element(selector).is().visible();
         WebElement button = root.findElement(selector);
 
         button.click();
