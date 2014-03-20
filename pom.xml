@@ -10,7 +10,7 @@
 
     <properties>
         <browser>firefox</browser>
-        <surefire.version>2.15</surefire.version>
+        <surefire.version>2.16</surefire.version>
     </properties>
 
     <dependencyManagement>
