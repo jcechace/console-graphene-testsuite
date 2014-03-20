@@ -5,7 +5,7 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.as.console.testsuite.fragments.config.patching.PatchErrorPanelFragment;
+import org.jboss.as.console.testsuite.fragments.config.patching.PatchResultPanelFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
 import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
@@ -127,10 +127,10 @@ public class ApplyPatchTestCase {
         applyPatchWizard.getEditor().uploadFile(patchFile, PropUtils.get("runtime.patching.apply.fileupload.name"));
         applyPatchWizard.next(); // only confirmation
         applyPatchWizard.next();
-        PatchErrorPanelFragment errorPanel = applyPatchWizard.getErrorPanel();
-        errorPanel.showDetails();
+        PatchResultPanelFragment errorPanel = applyPatchWizard.getResultPanel();
+        errorPanel.showErrorDetails();
         Assert.assertTrue("Apply patch failed with " + errorPanel.getErrorMessage()
-                + ",\n error details:" + errorPanel.getErrorDetailsAsPlainText(), false);
+                + ",\n error details:" + errorPanel.getErrorDetails(), false);
 
     }
 
