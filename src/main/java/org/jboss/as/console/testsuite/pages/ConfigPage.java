@@ -4,11 +4,15 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.ConfigAreaFragment;
 import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
+import org.jboss.as.console.testsuite.fragments.shared.modals.AdvancedSelectBox;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 /**
  * Created by jcechace on 22/02/14.
@@ -76,4 +80,35 @@ public class ConfigPage extends BasePage {
     public WizardWindow addResource() {
         return addResource(WizardWindow.class);
     }
+
+    public void pickProfile(String label) {
+        AdvancedSelectBox picker = getProfilePicker();
+        picker.pickOption(label);
+
+        Console.withBrowser(browser).waitUntilFinished();
+    }
+
+    public AdvancedSelectBox getProfilePicker() {
+        WebElement pickerRoot = getProfilePickerRoot();
+        AdvancedSelectBox selectBox = Graphene.createPageFragment(AdvancedSelectBox.class,
+                pickerRoot);
+
+        return selectBox;
+
+    }
+
+    private WebElement getProfilePickerRoot() {
+        By selector = By.className(PropUtils.get("navigation.selector.class"));
+        By pickerSelector = By.className(PropUtils.get("components.selectbox.class"));
+        List<WebElement> elements = browser.findElements(selector);
+        for (WebElement elem : elements) {
+            if (elem.getText().toLowerCase().contains("profile")) {
+                WebElement pickerRoot = elem.findElement(pickerSelector);
+                return pickerRoot;
+            }
+        }
+
+        throw new NoSuchElementException("Unable to find profile picker root");
+    }
+
 }
