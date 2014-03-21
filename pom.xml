@@ -112,11 +112,11 @@
                 </dependency>
             </dependencies>
         </profile>
+
         <profile>
             <id>wildfly-domain</id>
             <properties>
                 <arquillian.launch>wildfy-domain</arquillian.launch>
-                <jboss.dist>${jboss.dist}</jboss.dist>
             </properties>
             <dependencies>
                 <dependency>
@@ -126,10 +126,16 @@
                 </dependency>
             </dependencies>
         </profile>
+
         <profile>
             <id>eap</id>
             <properties>
                 <arquillian.launch>eap</arquillian.launch>
+                <suite.mode>standalone</suite.mode>
+                <test.category>
+                    org.jboss.as.console.testsuite.tests.categories.SharedTest,
+                    org.jboss.as.console.testsuite.tests.categories.StandaloneTest
+                </test.category>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -142,11 +148,16 @@
                 </dependency>
             </dependencies>
         </profile>
+
         <profile>
             <id>eap-domain</id>
             <properties>
                 <arquillian.launch>eap-domain</arquillian.launch>
-                <jboss.dist>${jboss.dist}</jboss.dist>
+                <suite.mode>domain</suite.mode>
+                <test.category>
+                    org.jboss.as.console.testsuite.tests.categories.SharedTest,
+                    org.jboss.as.console.testsuite.tests.categories.DomainTest
+                </test.category>
             </properties>
             <dependencies>
                 <dependency>
@@ -179,6 +190,9 @@
                         <jboss.dist>${jboss.dist}</jboss.dist>
                     </systemPropertyVariables>
                     <argLine>${argLine}</argLine>
+                    <groups>
+                        ${test.category}
+                    </groups>
                 </configuration>
             </plugin>
         </plugins>
