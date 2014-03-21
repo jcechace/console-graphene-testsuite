@@ -1,42 +1,58 @@
 package org.jboss.as.console.testsuite.tests.configuration.datasources;
 
-import junit.framework.Assert;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
-import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.as.console.testsuite.fragments.config.datasources.ConnectionConfig;
-import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceConfigArea;
-import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceWizard;
-import org.jboss.as.console.testsuite.fragments.config.datasources.TestConnectionWindow;
-import org.jboss.as.console.testsuite.util.Editor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.WebDriver;
 import org.jboss.as.console.testsuite.pages.config.DatasourcesPage;
+import org.jboss.as.console.testsuite.tests.categories.SharedTest;
+import org.jboss.as.console.testsuite.tests.util.CliProvider;
 import org.jboss.as.console.testsuite.util.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-        
+import org.junit.*;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+
 /**
  * Created by jcechace on 21/02/14.
  */
 @RunWith(Arquillian.class)
-public class TestConnectionTestCase {
-    
-    private static final Logger log = LoggerFactory.getLogger(TestConnectionTestCase.class);
-    
-     @Drone
-    private WebDriver browser;
+@Category(SharedTest.class)
+public class TestConnectionTestCase extends AbstractTestConnectionTestCase{
 
-    @Page
-    private DatasourcesPage datasourcesPage;
+    private static final Logger log = LoggerFactory.getLogger(TestConnectionTestCase.class);
+
+
+    private static String dsNameValid;
+    private static String xaDsNameValid;
+    private static String dsNameInvalid;
+    private static String xaDsNameInvalid;
+
+    private static final String VALID_URL = "jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1";
+    private static final String INVALID_URL = "invalidUrl";
+
+
+    // Setup
+
+    @BeforeClass
+    public static void setup() {  // create needed datasources
+        cliClient = CliProvider.getClient();
+
+        dsNameValid = DSTestUtils.createDatasource(cliClient, VALID_URL, false);
+        dsNameInvalid = DSTestUtils.createDatasource(cliClient, INVALID_URL, false);
+        xaDsNameInvalid = DSTestUtils.createDatasource(cliClient, INVALID_URL, true);
+        xaDsNameValid = DSTestUtils.createDatasource(cliClient, VALID_URL, true);;
+    }
+
+    @AfterClass
+    public static void tearDown() { // remove datasources when finished
+        DSTestUtils.removeDatasource(cliClient,  dsNameInvalid, false);
+        DSTestUtils.removeDatasource(cliClient, xaDsNameValid, true);
+        DSTestUtils.removeDatasource(cliClient, xaDsNameInvalid, true);
+    }
 
     @Before
-    public void setup() {
+    public void before() {
         Graphene.goTo(DatasourcesPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
     }
@@ -46,33 +62,31 @@ public class TestConnectionTestCase {
         browser.navigate().refresh();
     }
 
+    // Regular DS tests
     @Test
     public void validDatasource() {
-        testConnection("ExampleDS", true);
+        testConnection(dsNameValid, true);
     }
 
     @Test
     public void invalidDatasource() {
-        String name = createInvalidDatasource();
-        try {
-            testConnection(name, false);
-        } finally {
-            removeInvalidDatasource(name, false);
-        }
+        testConnection(dsNameInvalid, false);
     }
 
     @Test
     public void validInWizard() {
-       String name = RandomStringUtils.randomAlphabetic(6);
-       testConnectionInWizard(name, "jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1", null, null, true);
+        String name = RandomStringUtils.randomAlphabetic(6);
+        testConnectionInWizard(name, VALID_URL, true);
     }
 
     @Test
     public void invalidInWizard() {
         String name = RandomStringUtils.randomAlphabetic(6);
-        testConnectionInWizard(name, "invalidUrl", null, null, false);
+        testConnectionInWizard(name, INVALID_URL, false);
     }
 
+
+    // XA DS tests
     @Test
     public void validXADatasource() {
         datasourcesPage.switchTab("XA Datasources");
@@ -84,69 +98,36 @@ public class TestConnectionTestCase {
 
     private String createInvalidDatasource() {
         String name = RandomStringUtils.randomAlphanumeric(5);
-        // TODO: implement me;
         log.debug(name);
         return "testds";
     }
 
     private void removeInvalidDatasource(String name, boolean xa) {
-        // TODO : implement me;
+
+        datasourcesPage.switchToXA();
+        testConnection(xaDsNameValid, true);
     }
 
-    private String createValidXADatasource() {
-        return "testxads";
+    @Test
+    public void invalidXADatasource() {
+        datasourcesPage.switchToXA();
+        testConnection(xaDsNameInvalid, false
+        );
     }
 
-    private String createInvalidXADatasource() {
-        return "testxads2";
+    @Test
+    public void validXAInWizard() {
+        datasourcesPage.switchToXA();
+
+        String name = RandomStringUtils.randomAlphabetic(6);
+        testXAConnectionInWizard(name, VALID_URL, true);
     }
 
-    private void assertNotExists(String name) {
-        // TODO: impelement me;
-    }
+    @Test
+    public void invalidXAInWizard() {
+        datasourcesPage.switchToXA();
 
-
-    private void testConnection(String name, boolean expected) {
-        datasourcesPage.selectByName(name);
-
-        DatasourceConfigArea config = datasourcesPage.getConfig();
-        ConnectionConfig connection = config.connectionConfig();
-        TestConnectionWindow window = connection.testConnection();
-
-        assertConnectionTest(window, expected);
-    }
-
-    private void testConnectionInWizard(String name, String url, String username,
-                                        String password, boolean expected) {
-        DatasourceWizard wizard = datasourcesPage.addResource();
-        Editor editor = wizard.getEditor();
-
-        editor.text("name", name);
-        editor.text("jndiName", "java:/" + name);
-
-        wizard.next();
-
-        wizard.next();
-        editor.text("connectionUrl", url);
-        if (username != null) {
-            editor.text("username", username);
-        }
-        if (password != null){
-            editor.password("password", password);
-        }
-
-        assertConnectionTest(wizard.testConnection(), expected);
-        assertNotExists(name);
-    }
-
-    private void assertConnectionTest(TestConnectionWindow window, boolean expected) {
-        boolean result = window.isSuccessful();
-        window.close();
-
-        if (expected) {
-            Assert.assertTrue("Connection test was expected to succeed", result);
-        } else {
-            Assert.assertFalse("Connection test was expected to fail", result);
-        }
+        String name = RandomStringUtils.randomAlphabetic(6);
+        testXAConnectionInWizard(name, "invalidUrl", false);
     }
 }
