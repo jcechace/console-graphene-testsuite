@@ -5,12 +5,14 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
+import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
 import org.jboss.qa.management.cli.CliClient;
 import org.jboss.qa.management.cli.PatchManager;
 import org.jboss.qa.management.common.Library;
 import org.jboss.qa.management.common.ServerUtils;
 import org.jboss.qa.management.common.ZipUtils;
 import org.junit.Assert;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import java.io.IOException;
  * @author rhatlapa (rhatlapa@redhat.com)
  */
 @RunWith(Arquillian.class)
+@Category(StandaloneTest.class)
 public abstract class PatchTestCaseAbstract {
 
     public static final String BASIC_PATCH_ZIP_TEMPLATE_NAME = "console-test-patch-basic.zip.template";
