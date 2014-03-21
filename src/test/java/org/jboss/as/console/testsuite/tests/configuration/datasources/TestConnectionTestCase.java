@@ -91,22 +91,9 @@ public class TestConnectionTestCase extends AbstractTestConnectionTestCase{
     public void validXADatasource() {
         datasourcesPage.switchTab("XA Datasources");
 
-        String name = createValidXADatasource();
-        testConnection(name, true);
-    }
-
-
-    private String createInvalidDatasource() {
-        String name = RandomStringUtils.randomAlphanumeric(5);
-        log.debug(name);
-        return "testds";
-    }
-
-    private void removeInvalidDatasource(String name, boolean xa) {
-
-        datasourcesPage.switchToXA();
         testConnection(xaDsNameValid, true);
     }
+
 
     @Test
     public void invalidXADatasource() {
