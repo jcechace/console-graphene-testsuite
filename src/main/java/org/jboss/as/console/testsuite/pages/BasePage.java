@@ -8,6 +8,7 @@ import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,7 +24,6 @@ public abstract class BasePage {
     @FindByJQuery("#header-links-section")
     private HeaderTabs headerNavigation;
 
-    @FindByJQuery("#main-content-area div[role='navigation'] .gwt-Tree")
     private NavigationFragment navigation;
 
     @FindBy(className = "footer-panel")
@@ -34,6 +34,14 @@ public abstract class BasePage {
     }
 
     public NavigationFragment getNavigation() {
+        if (navigation != null) {
+            return navigation;
+        }
+
+        By selector = ByJQuery.selector("#main-content-area div[role='navigation']");
+        WebElement navigationRoot = browser.findElement(selector);
+        navigation = Graphene.createPageFragment(NavigationFragment.class, navigationRoot);
+
         return navigation;
     }
 
@@ -69,8 +77,15 @@ public abstract class BasePage {
     public WebElement getContentRoot() {
         String cssClass = "gwt-TabLayoutPanelContent";
         String cssClass2 = "split-center";
-        By selector = ByJQuery.selector("." + cssClass + ":visible, ." + cssClass2);
-        WebElement contentRoot = browser.findElement(selector);
+        By selector = ByJQuery.selector("." + cssClass + ":visible");
+
+        WebElement contentRoot;
+        try {
+            contentRoot = browser.findElement(selector);
+        } catch (NoSuchElementException e) {
+            selector = ByJQuery.selector("." + cssClass2 + ":visible");
+            contentRoot = browser.findElement(selector);
+        }
 
         return contentRoot;
     }
