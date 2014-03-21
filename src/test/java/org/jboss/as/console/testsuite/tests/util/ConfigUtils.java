@@ -5,6 +5,8 @@ import org.jboss.as.console.testsuite.util.PropUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -56,7 +58,16 @@ public class ConfigUtils {
     }
 
     public static boolean isEAP() {
-        return get("suite.mode", "eap").toLowerCase().equals("eap");
+        return get("suite.server", "eap").toLowerCase().equals("eap");
+    }
+
+    public static boolean isDomain() {
+        return get("suite.mode", "standalone").toLowerCase().equals("domain");
+    }
+
+
+    public static String getDefaultProfile() {
+        return get("suite.domain.default.profile", "full");
     }
 
     public static String getProtocol() {
@@ -73,6 +84,15 @@ public class ConfigUtils {
 
     public static String getContext() {
         return get("suite.url.context.path", "/console/App.html");
+    }
+
+    public static URL getUrl() {
+        try {
+            URL url = new URL(getProtocol(), getHost(), getPort(), getContext());
+            return url;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid url", e);
+        }
     }
 
 }
