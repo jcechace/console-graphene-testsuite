@@ -3,6 +3,7 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
+import org.jboss.as.console.testsuite.fragments.RadioButton;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -173,5 +174,11 @@ public class Editor extends BaseFragment {
 
     private WebElement findElement(By selector, WebElement root) {
         return Console.withBrowser(browser).findElement(selector, root);
+    }
+
+    public RadioButton getRadioButton(String name) {
+        RadioButton button = Graphene.createPageFragment(RadioButton.class, root);
+        button.findChoices(name);
+        return button;
     }
 }
