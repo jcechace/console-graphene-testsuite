@@ -1,5 +1,7 @@
 package org.jboss.as.console.testsuite.tests.util;
 
+import org.jboss.arquillian.graphene.page.Location;
+import org.jboss.as.console.testsuite.pages.BasePage;
 import org.jboss.as.console.testsuite.util.PropUtils;
 
 import java.io.FileInputStream;
@@ -93,6 +95,16 @@ public class ConfigUtils {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid url", e);
         }
+    }
+
+    public static String getPageLocation(Class<? extends BasePage> page) {
+        if (!page.isAnnotationPresent(Location.class)) {
+            throw new IllegalArgumentException("Location annotation is not present on given page");
+        }
+
+        Location location = page.getAnnotation(Location.class);
+
+        return location.value();
     }
 
 }
