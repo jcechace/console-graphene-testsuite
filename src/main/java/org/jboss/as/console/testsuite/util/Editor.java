@@ -38,6 +38,7 @@ public class Editor extends BaseFragment {
     public void text(String identifier, String value) {
         WebElement input = getText(identifier);
         input.clear();
+        log.debug("setting value '" + value + "' to the text element '" + identifier + "'");
         Graphene.waitGui().until().element(input).value().equalTo("");
         input.sendKeys(value);
         Graphene.waitGui().until().element(input).value().equalTo(value);
@@ -70,7 +71,7 @@ public class Editor extends BaseFragment {
         input.clear();
         Graphene.waitGui().until().element(input).value().equalTo("");
         input.sendKeys(value);
-        log.debug(input.getText());
+        log.debug("password '" + input.getText() + "' was set");
     }
 
     /**
@@ -90,6 +91,7 @@ public class Editor extends BaseFragment {
      */
     public void uploadFile(File fileToUpload, String identifier) {
         WebElement fileInput = getFileInputElement(identifier);
+        log.debug("uploading file '" + fileToUpload.toString() + "'");
         fileInput.sendKeys(fileToUpload.getAbsolutePath());
         Graphene.waitGui().until().element(fileInput).value().equalTo(fileToUpload.getAbsolutePath());
     }
@@ -114,6 +116,7 @@ public class Editor extends BaseFragment {
         WebElement input = getCheckbox(identifier);
         boolean current = input.isSelected();
 
+        log.debug((value ? "setting" : "unsetting") + " checkbox '" + identifier + "'");
         if (value != current) {
             input.click();
         }
@@ -134,7 +137,10 @@ public class Editor extends BaseFragment {
     public boolean  checkbox(String identifier) {
         WebElement input = getCheckbox(identifier);
 
-        return input.isSelected();
+        boolean res = input.isSelected();
+        log.debug("checkbox '" + identifier + (res ? "is" : "isn't") + " set");
+
+        return res;
     }
 
 
@@ -154,6 +160,8 @@ public class Editor extends BaseFragment {
         try {
             text = findInputElement("text", identifier);
         } catch (NoSuchElementException ignore) {
+            log.debug("not found - looking for textarea '" + identifier + "'");
+
             String byIdSelector = "textarea[id$='" + identifier + "'], ";
             String byNameSelector = "textarea[name='" + identifier + "'], ";
             By selector = ByJQuery.selector(byIdSelector + ", " + byNameSelector);
@@ -165,6 +173,8 @@ public class Editor extends BaseFragment {
     }
 
     private WebElement findInputElement(String type, String identifier) {
+        log.debug("looking for the '" + type + "' input element identified by '" + identifier + "'");
+
         String byIdSelector = "input[type='" + type + "'][id$='" + identifier + "'], ";
         String byNameSelector = "input[type='" + type + "'][name='" + identifier + "'], ";
         By selector = ByJQuery.selector(byIdSelector + ", " + byNameSelector);
@@ -181,6 +191,7 @@ public class Editor extends BaseFragment {
      * @return radio button related to the presented name
      */
     private RadioButton findRadioButton(String name) {
+        log.debug("looking for the radio buttons for '" + name + "'");
         RadioButton button = Graphene.createPageFragment(RadioButton.class, root);
         button.findChoices(name);
         return button;
@@ -193,6 +204,7 @@ public class Editor extends BaseFragment {
      */
     public void radioButton(String name, int index) {
         RadioButton button = findRadioButton(name);
+        log.debug("picking " + index + "-th radio button");
         button.pick(index);
         Graphene.waitGui().until().element(button.getInputElement(index)).is().selected();
     }
@@ -203,6 +215,10 @@ public class Editor extends BaseFragment {
      */
     public int radioButton(String name) {
         RadioButton button = findRadioButton(name);
-        return button.getIndex();
+
+        int index = button.getIndex();
+        log.debug(index + "-th radio button is selected");
+
+        return index;
     }
 }
