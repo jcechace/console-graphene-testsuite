@@ -3,6 +3,7 @@ package org.jboss.as.console.testsuite.pages.home;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Location;
 import org.jboss.as.console.testsuite.fragments.homepage.HomepageSectionFragment;
+import org.jboss.as.console.testsuite.fragments.homepage.HomepageSideBarFragment;
 import org.jboss.as.console.testsuite.pages.BasePage;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
@@ -44,8 +45,14 @@ public class HomePage extends BasePage {
     }
 
 
-    public void getSideBar() {
+    public HomepageSideBarFragment getSideBar() {
+        By selector = By.className(PropUtils.get("homepage.sidebar.class"));
+        WebElement sidebarRoot = browser.findElement(selector);
 
+        HomepageSideBarFragment sidebar = Graphene.createPageFragment(HomepageSideBarFragment.class,
+                sidebarRoot);
+
+        return sidebar;
     }
 
 }
