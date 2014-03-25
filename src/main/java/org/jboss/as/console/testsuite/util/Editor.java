@@ -3,7 +3,7 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
-import org.jboss.as.console.testsuite.fragments.RadioButton;
+import org.jboss.as.console.testsuite.fragments.RadioButtonGroup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -190,9 +190,9 @@ public class Editor extends BaseFragment {
      * @param name name of the radio button input elements
      * @return radio button related to the presented name
      */
-    private RadioButton findRadioButton(String name) {
+    private RadioButtonGroup findRadioButton(String name) {
         log.debug("looking for the radio buttons for '{}'", name);
-        RadioButton button = Graphene.createPageFragment(RadioButton.class, root);
+        RadioButtonGroup button = Graphene.createPageFragment(RadioButtonGroup.class, root);
         button.findChoices(name);
         return button;
     }
@@ -203,7 +203,7 @@ public class Editor extends BaseFragment {
      * @param index index of the radio button to select
      */
     public void radioButton(String name, int index) {
-        RadioButton button = findRadioButton(name);
+        RadioButtonGroup button = findRadioButton(name);
         log.debug("picking {}-th radio button", index);
         button.pick(index);
         Graphene.waitGui().until().element(button.getInputElement(index)).is().selected();
@@ -213,12 +213,12 @@ public class Editor extends BaseFragment {
      * @param name name of the radio button input elements
      * @return the index of selected radio button of given name
      */
-    public int radioButton(String name) {
-        RadioButton button = findRadioButton(name);
+    public String radioButton(String name) {
+        RadioButtonGroup button = findRadioButton(name);
 
-        int index = button.getIndex();
-        log.debug("{}-th radio button is selected", index);
+        String value = button.getValue();
+        log.debug("Selected radio button has value {}", value);
 
-        return index;
+        return value;
     }
 }
