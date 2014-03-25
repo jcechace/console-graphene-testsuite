@@ -176,9 +176,33 @@ public class Editor extends BaseFragment {
         return Console.withBrowser(browser).findElement(selector, root);
     }
 
-    public RadioButton getRadioButton(String name) {
+    /**
+     * @param name name of the radio button input elements
+     * @return radio button related to the presented name
+     */
+    private RadioButton findRadioButton(String name) {
         RadioButton button = Graphene.createPageFragment(RadioButton.class, root);
         button.findChoices(name);
         return button;
+    }
+
+    /**
+     * Select the index-th radio button of given name
+     * @param name name of the radio button input elements
+     * @param index index of the radio button to select
+     */
+    public void radioButton(String name, int index) {
+        RadioButton button = findRadioButton(name);
+        button.pick(index);
+        Graphene.waitGui().until().element(button.getInputElement(index)).is().selected();
+    }
+
+    /**
+     * @param name name of the radio button input elements
+     * @return the index of selected radio button of given name
+     */
+    public int radioButton(String name) {
+        RadioButton button = findRadioButton(name);
+        return button.getIndex();
     }
 }
