@@ -15,7 +15,7 @@ public class HomepageSectionFragment extends BaseFragment {
     public boolean isOpened() {
         String openedClass = PropUtils.get("homepage.section.opened.class");
 
-    return  root.getAttribute("class").contains(openedClass);
+        return  root.getAttribute("class").contains(openedClass);
     }
 
     public void open() {
