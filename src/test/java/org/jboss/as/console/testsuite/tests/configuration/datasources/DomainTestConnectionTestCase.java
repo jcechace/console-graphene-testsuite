@@ -74,12 +74,6 @@ public class DomainTestConnectionTestCase extends AbstractTestConnectionTestCase
     }
 
     @Test
-    public void foo() {
-        datasourcesPage.pickProfile("full-ha");
-        System.out.println("dadad");
-    }
-
-    @Test
     public void testValidWithNoRunningServer() {
         DomainManagementCliUtils.stopAllServers(cliClient, 10l);
         testConnection(dsNameValid, false);
