@@ -9,7 +9,7 @@ import java.util.List;
  * Implementation of radio input element.
  * Created by mvelas on 24.3.2014.
  */
-public class RadioButton extends BaseFragment {
+public class RadioButtonGroup extends BaseFragment {
 
     /**
      * All radio buttons relevant to single choice.
@@ -30,13 +30,13 @@ public class RadioButton extends BaseFragment {
      * @param index index of the button to select
      */
     public void pick(int index) {
-        choices.get(index).click();
+        getInputElement(index).click();
     }
 
     /**
      * @return index of currently selected radio button
      */
-    public int getIndex() {
+    public int getSelectedIndex() {
         int i = 0;
         for(WebElement choice : choices) {
             if(choice.isSelected()) {
@@ -48,10 +48,14 @@ public class RadioButton extends BaseFragment {
     }
 
     /**
-     * @param i index of the radio butotn
+     * @param i index of the radio button
      * @return radio input of i-th choice
      */
     public WebElement getInputElement(int i) {
         return choices.get(i);
+    }
+
+    public String getValue() {
+        return getInputElement(getSelectedIndex()).getAttribute("value");
     }
 }
