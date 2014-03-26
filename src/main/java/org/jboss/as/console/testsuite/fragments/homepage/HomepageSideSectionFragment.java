@@ -28,7 +28,7 @@ public class HomepageSideSectionFragment extends BaseFragment {
     }
 
     public List<WebElement> getAllLinkElements() {
-        By selector = By.className(PropUtils.get("homepage.sidebar.section.link.class"));
+        By selector = By.className(PropUtils.get("homepage.link.class"));
         List<WebElement> elements = root.findElements(selector);
 
         return elements;
