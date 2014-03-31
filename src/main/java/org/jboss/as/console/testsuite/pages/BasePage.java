@@ -4,6 +4,7 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.arquillian.graphene.findby.FindByJQuery;
+import org.jboss.as.console.testsuite.fragments.InfoTableFragment;
 import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
@@ -88,5 +89,11 @@ public abstract class BasePage {
         }
 
         return contentRoot;
+    }
+
+    public InfoTableFragment getInfoTable(String title) {
+        ByJQuery selectorDiv = new ByJQuery("div.content-group-label:contains('" + title + "') ~ div");
+        ByJQuery selectorTableInDiv = new ByJQuery("table.form-view-panel");
+        return Graphene.createPageFragment(InfoTableFragment.class, browser.findElement(selectorDiv).findElement(selectorTableInDiv));
     }
 }
