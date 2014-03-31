@@ -24,7 +24,7 @@ public class ResourceTableFragment extends BaseFragment {
 
     public static final By SELECTOR = By.className(PropUtils.get("tables.default.class"));
     private static final By SELECTOR_PAGER
-            = By.xpath("./following::table[contains(@class, \"" + PagerFragment.CLASS_NAME_PAGER + "\")]");
+            = By.xpath("./following::table[contains(@class, '" + PagerFragment.CLASS_NAME_PAGER + "')]");
     private PagerFragment pager = null;
 
     /**
