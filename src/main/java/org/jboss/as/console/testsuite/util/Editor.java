@@ -192,8 +192,7 @@ public class Editor extends BaseFragment {
      */
     private RadioButtonGroup findRadioButton(String name) {
         log.debug("looking for the radio buttons for '{}'", name);
-        RadioButtonGroup button = Graphene.createPageFragment(RadioButtonGroup.class, root);
-        button.findChoices(name);
+        RadioButtonGroup button = new RadioButtonGroup(name, root);
         return button;
     }
 
@@ -210,8 +209,20 @@ public class Editor extends BaseFragment {
     }
 
     /**
+     * Select the radio button of given name and value
      * @param name name of the radio button input elements
-     * @return the index of selected radio button of given name
+     * @param value value of the radio button to select
+     */
+    public void radioButton(String name, String value) {
+        RadioButtonGroup button = findRadioButton(name);
+        log.debug("picking radio button with value '{}'", value);
+        button.pick(value);
+        Graphene.waitGui().until().element(button.getInputElement(value)).is().selected();
+    }
+
+    /**
+     * @param name name of the radio button input elements
+     * @return the value of selected radio button of given name
      */
     public String radioButton(String name) {
         RadioButtonGroup button = findRadioButton(name);
