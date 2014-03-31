@@ -2,6 +2,7 @@ package org.jboss.as.console.testsuite.fragments.config.patching;
 
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,19 @@ import org.slf4j.LoggerFactory;
 public class PatchingWizard extends WizardWindow {
 
     private static final Logger log = LoggerFactory.getLogger(PatchingWizard.class);
+
+    /**
+     * select radio button whether server should or shouldn't be restarted
+     * @param restart (whether server is supposed to be restarted or not
+     */
+    public void restartSever(boolean restart) {
+        String identifier = PropUtils.get("runtime.patching.restarthost.radio");
+        if (restart) {
+            getEditor().radioButton(identifier, 0);
+        } else {
+            getEditor().radioButton(identifier, 1);
+        }
+    }
 
     /**
      * @return abstraction for patching wizard result, null if no result visible at current wizard
