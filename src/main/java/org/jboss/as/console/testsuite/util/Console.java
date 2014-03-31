@@ -10,7 +10,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Alert;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -203,4 +208,61 @@ public class Console {
         return findElement(selector, root);
     }
 
+    /**
+     * Robot swithes focus into next field of GUI.
+     *
+     * @param robot executor
+     */
+    protected void switchField(Robot robot) {
+        robot.keyPress(KeyEvent.VK_TAB);
+        robot.keyRelease(KeyEvent.VK_TAB);
+    }
+
+    /**
+     * Robot types character into active input filed of GUI. First, the string is storred into clipboard
+     * and then the string is copied (pressing Ctrl+V) into the input field.
+     *
+     * @param characters to be typed
+     * @param robot      executor
+     */
+    protected void type(String characters, Robot robot) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(characters);
+        clipboard.setContents(stringSelection, stringSelection);
+
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
+    /**
+     * Method authenticates into webconsole.
+     *
+     * @param username name of user
+     * @param password password of the user for the authentication
+     */
+    public boolean authenticate(String username, String password) {
+        int minWaitTime = 1 * 1000;
+
+        try {
+            // waiting for login page to be loaded
+            Thread.sleep(minWaitTime);
+
+            Robot robot = new Robot();
+            Alert alert = browser.switchTo().alert();
+            alert.sendKeys(username);
+
+            switchField(robot);
+            Thread.sleep(minWaitTime);
+            type(password, robot);
+            Thread.sleep(minWaitTime);
+
+            alert.accept();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
