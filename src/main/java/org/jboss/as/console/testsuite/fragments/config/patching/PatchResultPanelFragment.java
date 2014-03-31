@@ -1,5 +1,6 @@
 package org.jboss.as.console.testsuite.fragments.config.patching;
 
+import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
@@ -83,6 +84,8 @@ public class PatchResultPanelFragment extends BaseFragment {
      * @return visible result (success) message
      */
     public String getMessage() {
+        Graphene.waitModel().until().element(SUCCESS_MESSAGE_SELECTOR).is().visible();
+
         return root.findElement(SUCCESS_MESSAGE_SELECTOR).getText();
     }
 
