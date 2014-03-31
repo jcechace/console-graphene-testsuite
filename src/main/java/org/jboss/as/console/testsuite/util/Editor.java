@@ -3,6 +3,7 @@ package org.jboss.as.console.testsuite.util;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
+import org.jboss.as.console.testsuite.fragments.RadioButtonGroup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -37,6 +38,7 @@ public class Editor extends BaseFragment {
     public void text(String identifier, String value) {
         WebElement input = getText(identifier);
         input.clear();
+        log.debug("setting value '{}' to the text element '{}'", value, identifier);
         Graphene.waitGui().until().element(input).value().equalTo("");
         input.sendKeys(value);
         Graphene.waitGui().until().element(input).value().equalTo(value);
@@ -69,7 +71,7 @@ public class Editor extends BaseFragment {
         input.clear();
         Graphene.waitGui().until().element(input).value().equalTo("");
         input.sendKeys(value);
-        log.debug(input.getText());
+        log.debug("password '{}' was set", input.getText());
     }
 
     /**
@@ -89,6 +91,7 @@ public class Editor extends BaseFragment {
      */
     public void uploadFile(File fileToUpload, String identifier) {
         WebElement fileInput = getFileInputElement(identifier);
+        log.debug("uploading file '{}'", fileToUpload.toString());
         fileInput.sendKeys(fileToUpload.getAbsolutePath());
         Graphene.waitGui().until().element(fileInput).value().equalTo(fileToUpload.getAbsolutePath());
     }
@@ -113,6 +116,7 @@ public class Editor extends BaseFragment {
         WebElement input = getCheckbox(identifier);
         boolean current = input.isSelected();
 
+        log.debug("{} checkbox '{}'", (value ? "setting" : "unsetting"), identifier);
         if (value != current) {
             input.click();
         }
@@ -133,7 +137,10 @@ public class Editor extends BaseFragment {
     public boolean  checkbox(String identifier) {
         WebElement input = getCheckbox(identifier);
 
-        return input.isSelected();
+        boolean res = input.isSelected();
+        log.debug("checkbox '{}' {} set", identifier, (res ? "is" : "isn't"));
+
+        return res;
     }
 
 
@@ -153,6 +160,8 @@ public class Editor extends BaseFragment {
         try {
             text = findInputElement("text", identifier);
         } catch (NoSuchElementException ignore) {
+            log.debug("not found - looking for textarea '{}'", identifier);
+
             String byIdSelector = "textarea[id$='" + identifier + "'], ";
             String byNameSelector = "textarea[name='" + identifier + "'], ";
             By selector = ByJQuery.selector(byIdSelector + ", " + byNameSelector);
@@ -164,6 +173,8 @@ public class Editor extends BaseFragment {
     }
 
     private WebElement findInputElement(String type, String identifier) {
+        log.trace("looking for the '{}' input element identified by '{}'", type, identifier);
+
         String byIdSelector = "input[type='" + type + "'][id$='" + identifier + "'], ";
         String byNameSelector = "input[type='" + type + "'][name='" + identifier + "'], ";
         By selector = ByJQuery.selector(byIdSelector + ", " + byNameSelector);
@@ -173,5 +184,52 @@ public class Editor extends BaseFragment {
 
     private WebElement findElement(By selector, WebElement root) {
         return Console.withBrowser(browser).findElement(selector, root);
+    }
+
+    /**
+     * @param name name of the radio button input elements
+     * @return radio button related to the presented name
+     */
+    private RadioButtonGroup findRadioButton(String name) {
+        log.debug("looking for the radio buttons for '{}'", name);
+        RadioButtonGroup button = new RadioButtonGroup(name, root);
+        return button;
+    }
+
+    /**
+     * Select the index-th radio button of given name
+     * @param name name of the radio button input elements
+     * @param index index of the radio button to select
+     */
+    public void radioButton(String name, int index) {
+        RadioButtonGroup button = findRadioButton(name);
+        log.debug("picking {}-th radio button", index);
+        button.pick(index);
+        Graphene.waitGui().until().element(button.getInputElement(index)).is().selected();
+    }
+
+    /**
+     * Select the radio button of given name and value
+     * @param name name of the radio button input elements
+     * @param value value of the radio button to select
+     */
+    public void radioButton(String name, String value) {
+        RadioButtonGroup button = findRadioButton(name);
+        log.debug("picking radio button with value '{}'", value);
+        button.pick(value);
+        Graphene.waitGui().until().element(button.getInputElement(value)).is().selected();
+    }
+
+    /**
+     * @param name name of the radio button input elements
+     * @return the value of selected radio button of given name
+     */
+    public String radioButton(String name) {
+        RadioButtonGroup button = findRadioButton(name);
+
+        String value = button.getValue();
+        log.debug("Selected radio button has value {}", value);
+
+        return value;
     }
 }
