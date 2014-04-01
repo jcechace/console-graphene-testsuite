@@ -1,10 +1,13 @@
 package org.jboss.as.console.testsuite.pages;
 
+import java.util.List;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.arquillian.graphene.findby.FindByJQuery;
+import org.jboss.as.console.testsuite.fragments.MessageListEntry;
 import org.jboss.as.console.testsuite.fragments.NavigationFragment;
+import org.jboss.as.console.testsuite.fragments.NotificationCenterFragment;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.openqa.selenium.By;
@@ -25,6 +28,7 @@ public abstract class BasePage {
     private HeaderTabs headerNavigation;
 
     private NavigationFragment navigation;
+    private NotificationCenterFragment notification;
 
     @FindBy(className = "footer-panel")
     private Footer footer;
@@ -48,7 +52,6 @@ public abstract class BasePage {
     public Footer getFooter() {
         return footer;
     }
-
 
     public void clickButton(String label) {
         By selector = ByJQuery.selector("button#" + label + ", button:contains('" + label + "')");
@@ -88,5 +91,37 @@ public abstract class BasePage {
         }
 
         return contentRoot;
+    }
+
+    /**
+     * @return list of simple messages
+     */
+    public List<MessageListEntry> getMessages() {
+        return this.getNotificationArea().openMessagesList().getMessagesAsData();
+    }
+
+    /**
+     * @return whether there is any message in message list
+     */
+    public boolean hasMessages() {
+        return this.getNotificationArea().openMessagesList().hasMessages();
+    }
+
+    /**
+     * Clear messages in notification area.
+     */
+    public void clearMessages() {
+        this.getNotificationArea().openMessagesList().clear();
+    }
+
+    /**
+     * @return fragment for notification area
+     */
+    public NotificationCenterFragment getNotificationArea() {
+        if (notification == null) {
+            WebElement e = browser.findElement(By.className(NotificationCenterFragment.CLASS_ROOT));
+            notification = Graphene.createPageFragment(NotificationCenterFragment.class, e);
+        }
+        return notification;
     }
 }
