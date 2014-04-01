@@ -106,7 +106,7 @@ public class WindowFragment extends BaseFragment {
     }
 
     public String getTitle() {
-        By selector = By.tagName("h3");
+        By selector = By.tagName(PropUtils.get("modals.window.content.title.tag"));
         WebElement title = root.findElement(selector);
 
         return title.getText();

@@ -9,7 +9,7 @@ import org.jboss.as.console.testsuite.util.PropUtils;
  */
 public class NotificationCenterFragment extends BaseFragment {
 
-    public static final String CLASS_ROOT_DIV = PropUtils.get("notificationarea.class");
+    public static final String CLASS_ROOT = PropUtils.get("notificationarea.class");
 
     /**
      * @return visible text of this element
@@ -25,12 +25,12 @@ public class NotificationCenterFragment extends BaseFragment {
         String[] split = getText().split(" ");
         return Integer.valueOf(split[split.length - 1]);
     }
-
+    
     /**
      * Open popup window with messages by clicking on this element
      * @return opened popup window with messages
      */
-    public MessagesListFragment openMessagesWindow() {
+    public MessagesListFragment openMessagesList() {
         root.click();
         Console console = Console.withBrowser(browser);
         MessagesListFragment popup = console.openedPopup(MessagesListFragment.class);
