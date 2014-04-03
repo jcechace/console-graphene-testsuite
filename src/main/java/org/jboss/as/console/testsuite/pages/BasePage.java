@@ -10,6 +10,8 @@ import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.as.console.testsuite.fragments.NotificationCenterFragment;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
+import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -33,6 +35,14 @@ public abstract class BasePage {
     @FindBy(className = "footer-panel")
     private Footer footer;
 
+
+    // SELECTORS
+    private static By INFO_TABLE_SELECTOR = By.className(PropUtils.get("infotable.class"));
+    private static By SPLIT_ROOT_SELECTOR = ByJQuery.selector("." + PropUtils
+            .get("page.splitlayout.class") + ":visible");
+    private static By TAB_ROOT_SELECTOR   = ByJQuery.selector("." + PropUtils
+            .get("page.tablayout.class") + ":visible");
+
     public HeaderTabs getHeaderNavigation() {
         return headerNavigation;
     }
@@ -42,7 +52,7 @@ public abstract class BasePage {
             return navigation;
         }
 
-        By selector = ByJQuery.selector("#main-content-area div[role='navigation']");
+        By selector = ByJQuery.selector("#main-content-area div [role='navigation']");
         WebElement navigationRoot = browser.findElement(selector);
         navigation = Graphene.createPageFragment(NavigationFragment.class, navigationRoot);
 
@@ -78,16 +88,11 @@ public abstract class BasePage {
     }
 
     public WebElement getContentRoot() {
-        String cssClass = "gwt-TabLayoutPanelContent";
-        String cssClass2 = "split-center";
-        By selector = ByJQuery.selector("." + cssClass + ":visible");
-
         WebElement contentRoot;
         try {
-            contentRoot = browser.findElement(selector);
+            contentRoot = browser.findElement(TAB_ROOT_SELECTOR);
         } catch (NoSuchElementException e) {
-            selector = ByJQuery.selector("." + cssClass2 + ":visible");
-            contentRoot = browser.findElement(selector);
+            contentRoot = browser.findElement(SPLIT_ROOT_SELECTOR);
         }
 
         return contentRoot;
@@ -123,5 +128,12 @@ public abstract class BasePage {
             notification = Graphene.createPageFragment(NotificationCenterFragment.class, e);
         }
         return notification;
+    }
+
+    public InfoTable getInfoTable() {
+        WebElement root = getContentRoot().findElement(INFO_TABLE_SELECTOR);
+        InfoTable table = Graphene.createPageFragment(InfoTable.class, root);
+
+        return table;
     }
 }
