@@ -130,6 +130,9 @@ public abstract class BasePage {
         return notification;
     }
 
+    /**
+     * @return fragment for information table
+     */
     public InfoTable getInfoTable() {
         WebElement root = getContentRoot().findElement(INFO_TABLE_SELECTOR);
         InfoTable table = Graphene.createPageFragment(InfoTable.class, root);
