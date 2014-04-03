@@ -1,4 +1,4 @@
-package org.jboss.as.console.testsuite.fragments;
+package org.jboss.as.console.testsuite.util.formeditor;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
