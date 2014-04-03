@@ -1,10 +1,12 @@
-package org.jboss.as.console.testsuite.util;
+package org.jboss.as.console.testsuite.util.formeditor;
 
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
-import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
-import org.jboss.as.console.testsuite.fragments.ResourceTableRowFragment;
+import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableFragment;
+import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableRowFragment;
+import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 

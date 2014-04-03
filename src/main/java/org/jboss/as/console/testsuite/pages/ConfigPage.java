@@ -3,7 +3,7 @@ package org.jboss.as.console.testsuite.pages;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.ConfigAreaFragment;
-import org.jboss.as.console.testsuite.fragments.ResourceTableFragment;
+import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.AdvancedSelectBox;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.util.Console;

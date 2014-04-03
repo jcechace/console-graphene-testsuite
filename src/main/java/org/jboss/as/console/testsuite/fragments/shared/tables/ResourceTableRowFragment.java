@@ -1,5 +1,6 @@
-package org.jboss.as.console.testsuite.fragments;
+package org.jboss.as.console.testsuite.fragments.shared.tables;
 
+import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 

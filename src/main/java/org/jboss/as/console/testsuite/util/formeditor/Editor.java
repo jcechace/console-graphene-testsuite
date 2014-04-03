@@ -1,9 +1,10 @@
-package org.jboss.as.console.testsuite.util;
+package org.jboss.as.console.testsuite.util.formeditor;
 
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.fragments.RadioButtonGroup;
+import org.jboss.as.console.testsuite.util.Console;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;

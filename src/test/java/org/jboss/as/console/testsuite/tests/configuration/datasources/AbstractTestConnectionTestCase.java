@@ -8,8 +8,8 @@ import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceCon
 import org.jboss.as.console.testsuite.fragments.config.datasources.DatasourceWizard;
 import org.jboss.as.console.testsuite.fragments.config.datasources.TestConnectionWindow;
 import org.jboss.as.console.testsuite.pages.config.DatasourcesPage;
-import org.jboss.as.console.testsuite.util.Editor;
-import org.jboss.as.console.testsuite.util.PropertyEditor;
+import org.jboss.as.console.testsuite.util.formeditor.Editor;
+import org.jboss.as.console.testsuite.util.formeditor.PropertyEditor;
 import org.jboss.qa.management.cli.CliClient;
 import org.openqa.selenium.WebDriver;
 
