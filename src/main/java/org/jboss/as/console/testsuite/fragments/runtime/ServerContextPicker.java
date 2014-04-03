@@ -1,6 +1,7 @@
-package org.jboss.as.console.testsuite.fragments;
+package org.jboss.as.console.testsuite.fragments.runtime;
 
 import org.jboss.arquillian.graphene.findby.ByJQuery;
+import org.jboss.as.console.testsuite.fragments.PopUpFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.WebElement;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * Class implements pop-up fragment for switching host/server context in domain mode
  */
-public class SwitchServerFragment extends PopUpFragment {
+public class ServerContextPicker extends PopUpFragment {
     final static public ByJQuery BUTTON_SELECTOR = ByJQuery.selector(PropUtils.get("topology.server.switch.button"));
 
     /**
