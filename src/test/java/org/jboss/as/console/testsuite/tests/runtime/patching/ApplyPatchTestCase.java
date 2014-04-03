@@ -36,11 +36,11 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
             ServerUtils.waitForServerToBecomeAvailable(cliClient);
         }
         cliClient.restart(false);
-        if (patchCliManager.isPatchInstaled(CUMULATIVE_PATCH_NAME)) {
-            removePatchViaCliUsingRollback(cliClient, CUMULATIVE_PATCH_NAME);
+        if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
+            removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
-        if (patchCliManager.isPatchInstaled(BASIC_PATCH_NAME)) {
-            removePatchViaCliUsingRollback(cliClient, BASIC_PATCH_NAME);
+        if (patchCliManager.isPatchInstalled(BASIC_PATCH_NAME)) {
+            removePatchViaCliUsingRollback(BASIC_PATCH_NAME);
         }
 
         Graphene.goTo(PatchManagementPage.class);
@@ -52,11 +52,11 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
         if (!ServerUtils.isServerRunning(cliClient)) {
             ServerUtils.waitForServerToBecomeAvailable(cliClient);
         }
-        if (patchCliManager.isPatchInstaled(CUMULATIVE_PATCH_NAME)) {
-            removePatchViaCliUsingRollback(cliClient, CUMULATIVE_PATCH_NAME);
+        if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
+            removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
-        if (patchCliManager.isPatchInstaled(BASIC_PATCH_NAME)) {
-            removePatchViaCliUsingRollback(cliClient, BASIC_PATCH_NAME);
+        if (patchCliManager.isPatchInstalled(BASIC_PATCH_NAME)) {
+            removePatchViaCliUsingRollback(BASIC_PATCH_NAME);
         }
 
         browser.navigate().refresh();
@@ -64,47 +64,64 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
 
     @Test
     public void applyValidPatchTest() {
-        applyPatch(basicPatchFile, BASIC_PATCH_NAME, true);
-        applyPatch(cumulativePatchFile, CUMULATIVE_PATCH_NAME, true);
+        applyPatch(basicPatchFile, true, true);
+        verifyInstalledPatch(BASIC_PATCH_NAME, true);
+        applyPatch(cumulativePatchFile, true, true);
+        verifyInstalledPatch(BASIC_PATCH_NAME, true);
+        verifyInstalledPatch(CUMULATIVE_PATCH_NAME, true);
     }
 
     @Test
     public void applyInvalidPatchTest() {
-        applyPatch(cumulativePatchFile, CUMULATIVE_PATCH_NAME, false); // requires basic patch to be installed, which is not in this state
+        // cumulativePatchFile requires basic patch to be installed, which is not in this state
+        applyPatch(cumulativePatchFile, false, true);
+        verifyInstalledPatch(CUMULATIVE_PATCH_NAME, false);
     }
 
     @Test
     public void applyOneOffPatchTest() {
-        final String oneOffPatchName = "dummyOneOffPatch";
+        final String oneOffPatchName = "dummy-oneoff-patch";
         File oneOffPatchSimple = initPatchFile("console-test-oneoff-patch.zip.template", oneOffPatchName);
         try {
-            applyPatch(oneOffPatchSimple, oneOffPatchName, true);
+            applyPatch(oneOffPatchSimple, true, true);
+            verifyInstalledPatch(oneOffPatchName, true);
             Assert.assertEquals("Displayed patch type doesn't match", "one-off",
                     patchManagementPage.getResourceTable().getRowByText(0, oneOffPatchName).getCellValue(2));
         } finally {
-            if (patchCliManager.isPatchInstaled(oneOffPatchName)) {
-                removePatchViaCliUsingRollback(cliClient, oneOffPatchName);
+            if (patchCliManager.isPatchInstalled(oneOffPatchName)) {
+                removePatchViaCliUsingRollback(oneOffPatchName);
             }
         }
     }
 
+    @Test
+    public void applyBundlePatchTest() {
+        File bundlePatch = createBundlePatch(new File[]{basicPatchFile, cumulativePatchFile});
+        applyPatch(bundlePatch, true, true);
+        verifyInstalledPatch(CUMULATIVE_PATCH_NAME, true);
+        verifyInstalledPatch(BASIC_PATCH_NAME, true);
+    }
 
-    private void applyPatch(File patchFile, String patchName, boolean expectedResult) {
+
+    private void applyPatch(File patchFile, boolean expectedResult, boolean restartServer) {
         PatchingWizard applyPatchWizard = patchManagementPage.applyNewPatch();
         applyPatchWizard.getEditor().uploadFile(patchFile, PropUtils.get("runtime.patching.apply.fileupload.name"));
         applyPatchWizard.next();
         Assert.assertEquals("Result of applying patch, " + applyPatchWizard.getResultMessage(), expectedResult,
                 applyPatchWizard.isSuccess());
         if (expectedResult) {
+            applyPatchWizard.restartSever(restartServer);
             applyPatchWizard.finish();
         } else {
             applyPatchWizard.cancel();
         }
-        Assert.assertEquals(patchName +" was successfully applied:", expectedResult, patchCliManager.isPatchInstaled(patchName));
-        Assert.assertFalse("Restart is required by the server, should be already done by console",
-                cliClient.restartRequired());
+        assertRestartDoneByConsole(restartServer);
+    }
 
-        Assert.assertEquals(patchName + " is visible in console:", expectedResult, patchManagementPage.getResourceTable().getRowByText(0, patchName) != null);
+    private void verifyInstalledPatch(String patchName, boolean expectedResult) {
+        Assert.assertEquals(patchName +" was successfully applied:", expectedResult, patchCliManager.isPatchInstalled(patchName));
+        Assert.assertEquals(patchName + " is visible in console:", expectedResult,
+                patchManagementPage.getResourceTable().getRowByText(0, patchName) != null);
     }
 
 

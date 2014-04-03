@@ -11,14 +11,25 @@ import org.jboss.qa.management.cli.CliClient;
 import org.jboss.qa.management.cli.PatchManager;
 import org.jboss.qa.management.common.Library;
 import org.jboss.qa.management.common.ServerUtils;
+import org.jboss.qa.management.common.XmlConverter;
 import org.jboss.qa.management.common.ZipUtils;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,6 +44,8 @@ public abstract class PatchTestCaseAbstract {
 
     public static final String BASIC_PATCH_ZIP_TEMPLATE_NAME = "console-test-patch-basic.zip.template";
     public static final String CUMULATIVE_PATCH_ZIP_TEMPLATE_NAME = "console-test-patch-cumulated.zip.template";
+
+    public static final String PATCHES_ROOT_ELEMENT = "<patches xmlns=\"urn:jboss:patch:bundle:1.0\">\n";
 
     public static final String BASIC_PATCH_NAME = "basic-console-test-patch"; // simple cumulative patch
     public static final String CUMULATIVE_PATCH_NAME = "cumulative-console-test-patch"; // patch dependent on BASIC_PATCH_NAME
@@ -58,16 +71,16 @@ public abstract class PatchTestCaseAbstract {
     }
 
 
-    public void prepareAndApplyPatchViaCli(CliClient cliClient, File patchFile, String patchName) {
+    public void prepareAndApplyPatchViaCli(File patchFile, String patchName) {
         patchCliManager.apply(patchFile.getAbsolutePath());
         log.debug("patch {} applied", patchName);
         Assert.assertTrue("Patch wasn't successfully applied via CLI",
-                patchCliManager.isPatchInstaled(patchName));
+                patchCliManager.isPatchInstalled(patchName));
         browser.navigate().refresh();
     }
 
-    public void removePatchViaCliUsingRollback(CliClient cliClient, String patchName) {
-        patchCliManager.rollback(patchName, false);
+    public void removePatchViaCliUsingRollback(String patchName) {
+        patchCliManager.rollback(patchName, false, true);
     }
 
 
@@ -108,4 +121,50 @@ public abstract class PatchTestCaseAbstract {
                     cliClient.restartRequired());
         }
     }
+
+    public String generatePatchesXml(File[] patches) {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder;
+        try {
+            docBuilder = docFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException("Unable to create document builder");
+        }
+
+        //root elements
+        Document doc = docBuilder.newDocument();
+
+        Element rootElement = doc.createElement("patches");
+        rootElement.setAttribute("xmlns", "urn:jboss:patch:bundle:1.0");
+        for (int i = 0; i < patches.length; i++) {
+            Element patchElement = doc.createElement("element");
+            patchElement.setAttribute("id", "patch_" + String.valueOf(i));
+            patchElement.setAttribute("path", patches[i].getName());
+            rootElement.appendChild(patchElement);
+        }
+        doc.appendChild(rootElement);
+        String patchesXml = XmlConverter.xmlToString(doc);
+        log.debug("Generated patches.xml: {}", patchesXml);
+        return patchesXml;
+    }
+
+    public File createBundlePatch(File[] patches) {
+        File bundlePatch;
+        try {
+            bundlePatch = File.createTempFile("bundle-patch", ".zip");
+            bundlePatch.deleteOnExit();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to create tmp file for bungle patch");
+        }
+        JavaArchive zip = ShrinkWrap.create(JavaArchive.class, bundlePatch.getName());
+        for (File patchFile : patches) {
+            zip.add(new FileAsset(patchFile), patchFile.getName());
+        }
+
+        zip.add(new StringAsset(generatePatchesXml(patches)), "patches.xml");
+        zip.as(ZipExporter.class).exportTo(bundlePatch, true);
+        return bundlePatch;
+    }
+
+
 }

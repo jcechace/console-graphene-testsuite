@@ -34,7 +34,7 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
             ServerUtils.waitForServerToBecomeAvailable(cliClient);
         }
         cliClient.restart(false);
-        prepareAndApplyPatchViaCli(cliClient, basicPatchFile, BASIC_PATCH_NAME);
+        prepareAndApplyPatchViaCli(basicPatchFile, BASIC_PATCH_NAME);
 
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
@@ -45,17 +45,17 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
         if (!ServerUtils.isServerRunning(cliClient)) {
             ServerUtils.waitForServerToBecomeAvailable(cliClient);
         }
-        if (patchCliManager.isPatchInstaled(CUMULATIVE_PATCH_NAME)) {
-            removePatchViaCliUsingRollback(cliClient, CUMULATIVE_PATCH_NAME);
+        if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
+            removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
-        removePatchViaCliUsingRollback(cliClient, BASIC_PATCH_NAME);
+        removePatchViaCliUsingRollback(BASIC_PATCH_NAME);
 
         browser.navigate().refresh();
     }
 
     @Test
     public void rollbackCumulativePatchTest() {
-        prepareAndApplyPatchViaCli(cliClient, cumulativePatchFile, CUMULATIVE_PATCH_NAME);
+        prepareAndApplyPatchViaCli(cumulativePatchFile, CUMULATIVE_PATCH_NAME);
         rollbackPatch(CUMULATIVE_PATCH_NAME, true, true);
         Assert.assertFalse("Patch rollback failed",
                 patchCliManager.getCumulativePatchId().equals(CUMULATIVE_PATCH_NAME));
@@ -66,7 +66,7 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
 
     @Test
     public void rollbackOriginalAfterCumulativePatchFailureTest() {
-        prepareAndApplyPatchViaCli(cliClient, cumulativePatchFile, CUMULATIVE_PATCH_NAME);
+        prepareAndApplyPatchViaCli(cumulativePatchFile, CUMULATIVE_PATCH_NAME);
         rollbackPatch(BASIC_PATCH_NAME, false, true);
         Assert.assertTrue("Patch rollback should fail => cumulative patch should still be there",
                 patchCliManager.getPatchInfo().getCumulativePatchId().equals(CUMULATIVE_PATCH_NAME));

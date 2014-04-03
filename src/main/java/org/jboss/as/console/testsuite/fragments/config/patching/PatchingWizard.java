@@ -70,7 +70,7 @@ public class PatchingWizard extends WizardWindow {
         if (p == null) {
             return null;
         } else {
-            return p.isSuccessful() ? p.getMessage() : p.getErrorMessage();
+            return p.isSuccessful() ? p.getMessage() : p.getErrorMessage() + "\nError details: " + p.getErrorDetails();
         }
     }
 }
