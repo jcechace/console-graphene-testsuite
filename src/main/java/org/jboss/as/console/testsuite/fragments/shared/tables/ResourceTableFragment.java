@@ -80,17 +80,15 @@ public class ResourceTableFragment extends BaseFragment {
      * @return last row of entire table, null if no rows in table
      */
     public ResourceTableRowFragment getLastRow() {
-
         if (this.hasPager()) {
-            return this.getRow(this.getPager().getTotalRecordsCount() - 1);
+            this.getPager().goToLastPage();
+        }
+        List<WebElement> rowElements = getRowElements();
+        if (!rowElements.isEmpty()) {
+            WebElement rowRoot = rowElements.get(rowElements.size() - 1);
+            return Graphene.createPageFragment(ResourceTableRowFragment.class, rowRoot);
         } else {
-            List<WebElement> rowElements = getRowElements();
-            if (!rowElements.isEmpty()) {
-                WebElement rowRoot = rowElements.get(rowElements.size() - 1);
-                return Graphene.createPageFragment(ResourceTableRowFragment.class, rowRoot);
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 
@@ -134,6 +132,7 @@ public class ResourceTableFragment extends BaseFragment {
      * @param text text to search
      * @return first row that contains given text in given column or null if no such row found
      */
+
     public ResourceTableRowFragment getRowByText(int col, String text) {
 
         By selector = this.getRowByTextSelector(col, text);
