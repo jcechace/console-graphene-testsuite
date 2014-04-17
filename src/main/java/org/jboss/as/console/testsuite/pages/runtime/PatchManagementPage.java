@@ -11,16 +11,12 @@ import org.jboss.as.console.testsuite.util.PropUtils;
 @Location("#patching")
 public class PatchManagementPage extends ConfigPage {
 
-    public void selectByName(String name) {
-        getResourceTable().selectRowByText(0, name);
-    }
-
     public PatchingWizard applyNewPatch() {
         return addResource(PatchingWizard.class, PropUtils.get("runtime.patching.apply.label"));
     }
 
     public PatchingWizard rollbackPatch(String patchId) {
-        selectByName(patchId);
+        getResourceTable().selectRowByText(0, patchId);
         return addResource(PatchingWizard.class, PropUtils.get("runtime.patching.rollback.label"));
     }
 
