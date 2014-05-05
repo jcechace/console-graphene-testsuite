@@ -3,15 +3,17 @@ package org.jboss.as.console.testsuite.tests.runtime.patching;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
-import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableRowFragment;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.PatchManager;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.io.File;
 
 /**
  * Created by mvelas on 15.4.2014.
@@ -19,6 +21,9 @@ import java.util.List;
 public class PatchInfoTestCase extends PatchTestCaseAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(PatchInfoTestCase.class);
+
+    final String oneOffPatchName = "dummy-oneoff-patch";
+    File oneOffPatchSimple = initPatchFile("console-test-oneoff-patch.zip.template", oneOffPatchName);
 
     @Before
     public void before() {
@@ -39,15 +44,29 @@ public class PatchInfoTestCase extends PatchTestCaseAbstract {
     @InSequence(1)
     public void verifyPatchInfo() {
 
-        prepareAndApplyPatchViaCli(basicPatchFile, BASIC_PATCH_NAME);
-        verifyLastPatchInfo(BASIC_PATCH_NAME);
-
         try {
+            prepareAndApplyPatchViaCli(basicPatchFile, BASIC_PATCH_NAME);
+            verifyLastPatchInfo(BASIC_PATCH_NAME);
             prepareAndApplyPatchViaCli(cumulativePatchFile, CUMULATIVE_PATCH_NAME);
             verifyLastPatchInfo(CUMULATIVE_PATCH_NAME);
+            prepareAndApplyPatchViaCli(oneOffPatchSimple, oneOffPatchName);
+            verifyLastPatchInfo(oneOffPatchName);
         } finally {
+            removePatchViaCliUsingRollback(oneOffPatchName);
             removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
             removePatchViaCliUsingRollback(BASIC_PATCH_NAME);
+        }
+    }
+
+
+    @Test
+    @InSequence(2)
+    public void verifyOnlyOneOffPatchInfo() {
+        try {
+            prepareAndApplyPatchViaCli(oneOffPatchSimple, oneOffPatchName);
+            verifyLastPatchInfo(oneOffPatchName);
+        } finally {
+            removePatchViaCliUsingRollback(oneOffPatchName);
         }
     }
 
