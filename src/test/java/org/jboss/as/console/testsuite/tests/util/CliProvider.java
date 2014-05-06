@@ -20,7 +20,8 @@ public class CliProvider {
         CliClient cliClient = null;
         if (ConfigUtils.isDomain()) {
             String profile = ConfigUtils.getDefaultProfile();
-            cliClient = new DomainCliClient(profile);
+            String host =   ConfigUtils.getDefaultHost();
+            cliClient = new DomainCliClient(profile, host);
         } else {
             cliClient = new CliClient();
         }

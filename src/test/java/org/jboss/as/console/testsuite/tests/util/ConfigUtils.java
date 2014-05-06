@@ -72,6 +72,10 @@ public class ConfigUtils {
         return get("suite.domain.default.profile", "full");
     }
 
+    public static String getDefaultHost() {
+        return get("suite.domain.default.host", "master");
+    }
+
     public static String getProtocol() {
         return get("suite.url.protocol", "http");
     }
