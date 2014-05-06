@@ -13,6 +13,20 @@ public class PatchingWizard extends WizardWindow {
 
     private static final Logger log = LoggerFactory.getLogger(PatchingWizard.class);
 
+
+    /**
+     * select radio button whether servers on active host should be restarted
+     * @param shutdown (whether servers are supposed to be stopped not
+     */
+    public void shutdownServer(boolean shutdown) {
+        String identifier = PropUtils.get("runtime.patching.stopservers.radio");
+        if (shutdown) {
+            getEditor().radioButton(identifier, 0);
+        } else {
+            getEditor().radioButton(identifier, 1);
+        }
+    }
+
     /**
      * select radio button whether server should or shouldn't be restarted
      * @param restart (whether server is supposed to be restarted or not

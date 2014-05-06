@@ -1,15 +1,22 @@
 package org.jboss.as.console.testsuite.tests.runtime.patching;
 
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.graphene.Graphene;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
+import org.jboss.as.console.testsuite.tests.categories.SharedTest;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.cli.PatchManager;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +25,9 @@ import java.io.File;
 /**
  * Created by mvelas on 15.4.2014.
  */
+@RunWith(Arquillian.class)
+@RunAsClient
+@Category(SharedTest.class)
 public class PatchInfoTestCase extends PatchTestCaseAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(PatchInfoTestCase.class);
@@ -29,6 +39,9 @@ public class PatchInfoTestCase extends PatchTestCaseAbstract {
     public void before() {
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+        }
     }
 
     @Test
@@ -43,7 +56,6 @@ public class PatchInfoTestCase extends PatchTestCaseAbstract {
     @Test
     @InSequence(1)
     public void verifyPatchInfo() {
-
         try {
             prepareAndApplyPatchViaCli(basicPatchFile, BASIC_PATCH_NAME);
             verifyLastPatchInfo(BASIC_PATCH_NAME);

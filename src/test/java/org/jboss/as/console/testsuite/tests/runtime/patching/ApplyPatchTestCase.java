@@ -5,9 +5,13 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
+import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
+import org.jboss.qa.management.cli.DomainCliClient;
+import org.jboss.qa.management.common.DomainManager;
 import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,17 +29,19 @@ import java.io.File;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@Category(StandaloneTest.class)
+@Category(SharedTest.class)
 public class ApplyPatchTestCase extends PatchTestCaseAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(ApplyPatchTestCase.class);
 
     @Before
     public void before() {
-        if (!ServerUtils.isServerRunning(cliClient)) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        if (!serverManager.isInRunningState()) {
+            serverManager.waitUntilAvailable();
         }
+
         cliClient.restart(false);
+
         if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
             removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
@@ -45,13 +51,18 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
 
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
+
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+        }
     }
 
     @After
     public void after() {
-        if (!ServerUtils.isServerRunning(cliClient)) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        if (!serverManager.isInRunningState()) {
+            serverManager.waitUntilAvailable();
         }
+
         if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
             removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
@@ -105,6 +116,16 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
 
     private void applyPatch(File patchFile, boolean expectedResult, boolean restartServer) {
         PatchingWizard applyPatchWizard = patchManagementPage.applyNewPatch();
+
+        if(ConfigUtils.isDomain()) {
+            DomainManager dm = new DomainManager(cliClient);
+            if (!dm.listRunningServers().isEmpty()) {
+                applyPatchWizard.shutdownServer(true);
+                applyPatchWizard.next();
+                applyPatchWizard.waitUntilFinished();
+            }
+        }
+
         applyPatchWizard.getEditor().uploadFile(patchFile, PropUtils.get("runtime.patching.apply.fileupload.name"));
         applyPatchWizard.next();
         Assert.assertEquals("Result of applying patch, " + applyPatchWizard.getResultMessage(), expectedResult,

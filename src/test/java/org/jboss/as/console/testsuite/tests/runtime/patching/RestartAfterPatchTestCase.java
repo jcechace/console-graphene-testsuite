@@ -5,7 +5,9 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
 import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.cli.PatchManager;
 import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
@@ -29,12 +31,15 @@ public class RestartAfterPatchTestCase extends PatchTestCaseAbstract {
 
     @Before
     public void before() {
-        if (!ServerUtils.isServerRunning(cliClient)) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        if (!serverManager.isInRunningState()) {
+            serverManager.waitUntilAvailable();
         }
 
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+        }
 
         patchCliManager = new PatchManager(cliClient, false);
     }
@@ -54,7 +59,7 @@ public class RestartAfterPatchTestCase extends PatchTestCaseAbstract {
                 patchManagementPage.getInfoTable().get("Latest Applied Patch").contains("Pending restart"));
         patchManagementPage.restartServer().confirm();
 
-        ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        serverManager.waitUntilAvailable();
         browser.navigate().refresh();
 
         Assert.assertFalse("Restart was performed but pending is still displayed",

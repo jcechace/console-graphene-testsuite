@@ -5,8 +5,12 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
+import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
+import org.jboss.qa.management.cli.DomainCliClient;
+import org.jboss.qa.management.common.DomainManager;
 import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,28 +29,34 @@ import java.io.File;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@Category(StandaloneTest.class)
+@Category(SharedTest.class)
 public class RollbackPatchTestCase extends PatchTestCaseAbstract{
 
     private static final Logger log = LoggerFactory.getLogger(RollbackPatchTestCase.class);
 
     @Before
     public void before() {
-        if (!ServerUtils.isServerRunning(cliClient)) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        if (!serverManager.isInRunningState()) {
+            serverManager.waitUntilAvailable();
         }
+
         cliClient.restart(false);
+
         prepareAndApplyPatchViaCli(basicPatchFile, BASIC_PATCH_NAME);
 
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+        }
     }
 
     @After
     public void after() {
-        if (!ServerUtils.isServerRunning(cliClient)) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+        if (!serverManager.isInRunningState()) {
+            serverManager.waitUntilAvailable();
         }
+
         if (patchCliManager.isPatchInstalled(CUMULATIVE_PATCH_NAME)) {
             removePatchViaCliUsingRollback(CUMULATIVE_PATCH_NAME);
         }
@@ -108,6 +118,14 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
     private void rollbackPatch(String patchName, boolean expectedResult, boolean withServerRestart) {
         PatchingWizard rollbackPatchWizard = patchManagementPage.rollbackPatch(patchName);
         try {
+            if(ConfigUtils.isDomain()) {
+                DomainManager dm = new DomainManager(cliClient);
+                if (!dm.listRunningServers().isEmpty()) {
+                    rollbackPatchWizard.shutdownServer(true);
+                    rollbackPatchWizard.next();
+                    rollbackPatchWizard.waitUntilFinished();
+                }
+            }
             rollbackPatchWizard.next();
             rollbackPatchWizard.next();
             Assert.assertEquals("Result of applying patch, " + rollbackPatchWizard.getResultMessage(), expectedResult, rollbackPatchWizard.isSuccess());

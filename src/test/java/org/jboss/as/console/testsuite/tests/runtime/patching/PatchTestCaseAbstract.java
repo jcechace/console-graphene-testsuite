@@ -5,14 +5,13 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
+import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.qa.management.cli.CliClient;
 import org.jboss.qa.management.cli.PatchManager;
-import org.jboss.qa.management.common.Library;
-import org.jboss.qa.management.common.ServerUtils;
-import org.jboss.qa.management.common.XmlConverter;
-import org.jboss.qa.management.common.ZipUtils;
+import org.jboss.qa.management.common.*;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -39,18 +38,22 @@ import java.util.Map;
  * @author rhatlapa (rhatlapa@redhat.com)
  */
 @RunWith(Arquillian.class)
-@Category(StandaloneTest.class)
+@Category(SharedTest.class)
 public abstract class PatchTestCaseAbstract {
+
+    private static final Logger log = LoggerFactory.getLogger(PatchTestCaseAbstract.class);
 
     public static final String BASIC_PATCH_ZIP_TEMPLATE_NAME = "console-test-patch-basic.zip.template";
     public static final String CUMULATIVE_PATCH_ZIP_TEMPLATE_NAME = "console-test-patch-cumulated.zip.template";
-
     public static final String PATCHES_ROOT_ELEMENT = "<patches xmlns=\"urn:jboss:patch:bundle:1.0\">\n";
-
     public static final String BASIC_PATCH_NAME = "basic-console-test-patch"; // simple cumulative patch
     public static final String CUMULATIVE_PATCH_NAME = "cumulative-console-test-patch"; // patch dependent on BASIC_PATCH_NAME
-    protected File basicPatchFile = initPatchFile(PatchTestCaseAbstract.BASIC_PATCH_ZIP_TEMPLATE_NAME, BASIC_PATCH_NAME);
-    protected File cumulativePatchFile = initPatchFile(PatchTestCaseAbstract.CUMULATIVE_PATCH_ZIP_TEMPLATE_NAME, CUMULATIVE_PATCH_NAME);
+
+    protected File basicPatchFile;
+    protected File cumulativePatchFile;
+    protected CliClient cliClient = CliProvider.getClient();
+    protected ServerManager serverManager = ServerManager.getInstance(cliClient);
+    protected PatchManager patchCliManager = new PatchManager(cliClient, true);
 
     @Drone
     protected WebDriver browser;
@@ -58,15 +61,15 @@ public abstract class PatchTestCaseAbstract {
     @Page
     protected PatchManagementPage patchManagementPage;
 
-    private static final Logger log = LoggerFactory.getLogger(PatchTestCaseAbstract.class);
 
-    protected static CliClient cliClient = CliProvider.getClient();
-
-    protected PatchManager patchCliManager = new PatchManager(cliClient, true);
+    {
+        basicPatchFile = initPatchFile(PatchTestCaseAbstract.BASIC_PATCH_ZIP_TEMPLATE_NAME, BASIC_PATCH_NAME);
+        cumulativePatchFile = initPatchFile(PatchTestCaseAbstract.CUMULATIVE_PATCH_ZIP_TEMPLATE_NAME, CUMULATIVE_PATCH_NAME);
+    }
 
     public File initPatchFile(String patchFileTemplateName, String patchId) {
         String pathToPatchTemplate = getClass().getResource("/patching/"+patchFileTemplateName).getPath();
-        String serverVersion = ServerUtils.getVersion(cliClient);
+        String serverVersion = serverManager.getVersion();
         return createPatchZipFromTemplate(new File(pathToPatchTemplate), serverVersion, serverVersion, patchId);
     }
 
@@ -113,7 +116,7 @@ public abstract class PatchTestCaseAbstract {
 
     public void assertRestartDoneByConsole(boolean expectServerAsRestarted) {
         if (expectServerAsRestarted) {
-            ServerUtils.waitForServerToBecomeAvailable(cliClient);
+            serverManager.waitUntilAvailable();
             Assert.assertFalse("Restart is required by the server, should be already done by console",
                     cliClient.restartRequired());
         } else {

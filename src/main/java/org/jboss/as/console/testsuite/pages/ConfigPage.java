@@ -20,7 +20,7 @@ import java.util.List;
 public class ConfigPage extends BasePage {
     public ResourceTableFragment getResourceTable() {
         By selector = ByJQuery.selector(".default-cell-table[role='grid']:visible");
-        WebElement tableRoot =  getContentRoot().findElement(selector);
+        WebElement tableRoot = getContentRoot().findElement(selector);
         ResourceTableFragment table = Graphene.createPageFragment(ResourceTableFragment.class, tableRoot);
 
         return table;
@@ -49,7 +49,7 @@ public class ConfigPage extends BasePage {
      * @return
      */
     public ConfigAreaFragment getConfig() {
-       return getConfig(ConfigAreaFragment.class);
+        return getConfig(ConfigAreaFragment.class);
     }
 
     // TODO: There is no id or usable class on config tabpane - thus this workaround
@@ -88,8 +88,24 @@ public class ConfigPage extends BasePage {
         Console.withBrowser(browser).waitUntilFinished();
     }
 
+    public void pickHost(String label) {
+        AdvancedSelectBox picker = getHostPicker();
+        picker.pickOption(label);
+
+        Console.withBrowser(browser).waitUntilFinished();
+    }
+
+    public AdvancedSelectBox getHostPicker() {
+        return  getContextPicker("host");
+    }
+
+
     public AdvancedSelectBox getProfilePicker() {
-        WebElement pickerRoot = getProfilePickerRoot();
+        return  getContextPicker("profile");
+    }
+
+    private AdvancedSelectBox getContextPicker(String label) {
+        WebElement pickerRoot = getContextPickerRootByLabel(label);
         AdvancedSelectBox selectBox = Graphene.createPageFragment(AdvancedSelectBox.class,
                 pickerRoot);
 
@@ -97,18 +113,17 @@ public class ConfigPage extends BasePage {
 
     }
 
-    private WebElement getProfilePickerRoot() {
+    private WebElement getContextPickerRootByLabel(String label) {
         By selector = By.className(PropUtils.get("navigation.selector.class"));
         By pickerSelector = By.className(PropUtils.get("components.selectbox.class"));
         List<WebElement> elements = browser.findElements(selector);
         for (WebElement elem : elements) {
-            if (elem.getText().toLowerCase().contains("profile")) {
+            if (elem.getText().toLowerCase().contains(label.toLowerCase())) {
                 WebElement pickerRoot = elem.findElement(pickerSelector);
                 return pickerRoot;
             }
         }
 
-        throw new NoSuchElementException("Unable to find profile picker root");
+        throw new NoSuchElementException("Unable to find context picker root");
     }
-
 }
