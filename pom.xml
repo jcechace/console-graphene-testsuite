@@ -188,6 +188,7 @@
                         <browser>${browser}</browser>
                         <arquillian.launch>${arquillian.launch}</arquillian.launch>
                         <jboss.dist>${jboss.dist}</jboss.dist>
+                        <suite.mode>${suite.mode}</suite.mode>
                     </systemPropertyVariables>
                     <argLine>${argLine}</argLine>
                     <groups>
