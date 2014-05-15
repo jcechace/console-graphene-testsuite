@@ -12,6 +12,7 @@ import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.common.DomainManager;
+import org.jboss.qa.management.common.Library;
 import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author rhatlapa (rhatlapa@redhat.com)
@@ -140,7 +142,17 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
     }
 
     private void verifyInstalledPatch(String patchName, boolean expectedResult) {
+        log.debug("Trying to verify installed patch");
+        serverManager.waitUntilAvailable();
+        log.debug("Server should be available according to CLI.");
+
         Assert.assertEquals(patchName +" was successfully applied:", expectedResult, patchCliManager.isPatchInstalled(patchName));
+
+        log.debug("Reloading Admin Console.");
+        browser.navigate().to(ConfigUtils.getUrl());
+        Graphene.goTo(PatchManagementPage.class);
+        Console.withBrowser(browser).waitUntilLoaded();
+
         Assert.assertEquals(patchName + " is visible in console:", expectedResult,
                 patchManagementPage.getResourceTable().getRowByText(0, patchName) != null);
     }
