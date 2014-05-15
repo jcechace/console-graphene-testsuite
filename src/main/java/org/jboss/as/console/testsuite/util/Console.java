@@ -35,7 +35,7 @@ public class Console {
      */
     public void waitUntilLoaded() {
         // TODO: this should rather wait until the loading box is not present
-        Graphene.waitAjax().until().element(By.className("header-panel")).is().present();
+        Graphene.waitModel().until().element(By.className("header-panel")).is().present();
     }
 
     public void refresh() {
