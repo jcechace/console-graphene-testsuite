@@ -98,6 +98,8 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
         try {
             applyPatch(oneOffPatchSimple, true, true);
             verifyInstalledPatch(oneOffPatchName, true);
+            log.debug("Verifying patch type");
+            Library.letsSleep(42000);
             Assert.assertEquals("Displayed patch type doesn't match", "one-off",
                     patchManagementPage.getResourceTable().getRowByText(0, oneOffPatchName).getCellValue(2));
         } finally {
