@@ -4,16 +4,15 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
+import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableRowFragment;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
-import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
 import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.common.DomainManager;
 import org.jboss.qa.management.common.Library;
-import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author rhatlapa (rhatlapa@redhat.com)
@@ -100,8 +98,12 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
             verifyInstalledPatch(oneOffPatchName, true);
             log.debug("Verifying patch type");
             Library.letsSleep(42000);
-            Assert.assertEquals("Displayed patch type doesn't match", "one-off",
-                    patchManagementPage.getResourceTable().getRowByText(0, oneOffPatchName).getCellValue(2));
+
+            ResourceTableRowFragment patchEntry = patchManagementPage.getResourceTable()
+                    .getRowByText(0, oneOffPatchName);
+            log.debug(patchEntry.getRoot().getText());
+
+            Assert.assertEquals("Displayed patch type doesn't match", "one-off", patchEntry.getCellValue(2));
         } finally {
             if (patchCliManager.isPatchInstalled(oneOffPatchName)) {
                 removePatchViaCliUsingRollback(oneOffPatchName);
@@ -148,7 +150,7 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
         serverManager.waitUntilAvailable();
         log.debug("Server should be available according to CLI.");
 
-        Assert.assertEquals(patchName +" was successfully applied:", expectedResult, patchCliManager.isPatchInstalled(patchName));
+        Assert.assertEquals(patchName + " was successfully applied:", expectedResult, patchCliManager.isPatchInstalled(patchName));
 
         log.debug("Reloading Admin Console.");
         browser.navigate().to(ConfigUtils.getUrl());
