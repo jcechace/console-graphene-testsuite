@@ -23,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author rhatlapa (rhatlapa@redhat.com)
@@ -154,8 +157,11 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
 
         log.debug("Reloading Admin Console.");
         browser.navigate().to(ConfigUtils.getUrl());
-        Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
+
+        log.debug("Navigating to patch management.");
+        Graphene.goTo(PatchManagementPage.class);
+        Console.withBrowser(browser).waitForContent();
 
         Assert.assertEquals(patchName + " is visible in console:", expectedResult,
                 patchManagementPage.getResourceTable().getRowByText(0, patchName) != null);
