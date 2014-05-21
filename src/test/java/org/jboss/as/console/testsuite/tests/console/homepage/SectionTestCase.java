@@ -22,6 +22,7 @@ import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 /**
  * @author jcechace
  */
+@Ignore
 @RunWith(Arquillian.class)
 public class SectionTestCase {
     @Drone
