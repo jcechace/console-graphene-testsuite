@@ -2,46 +2,93 @@ package org.jboss.as.console.testsuite.pages.home;
 
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Location;
-import org.jboss.as.console.testsuite.fragments.homepage.HomepageSectionFragment;
+import org.jboss.as.console.testsuite.fragments.BaseFragment;
+import org.jboss.as.console.testsuite.fragments.homepage.HomepageInfoFragment;
 import org.jboss.as.console.testsuite.fragments.homepage.HomepageSideBarFragment;
+import org.jboss.as.console.testsuite.fragments.homepage.HomepageTaskFragment;
 import org.jboss.as.console.testsuite.pages.BasePage;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jcechace
  */
 @Location("#home")
 public class HomePage extends BasePage {
-    public HomepageSectionFragment getSection(String identifier) {
-        List<HomepageSectionFragment> sections = getAllSections();
-        for (HomepageSectionFragment section : sections) {
-            String id = section.getHeader().getAttribute("id").toLowerCase();
-            if (id.endsWith(identifier.toLowerCase())) {
-                return section;
-            }
+
+    public static enum BoxType {
+
+        TASK("homepage.task.class", "homepage.task.header.class"),
+        INFO("homepage.info.class", "homepage.info.header.class");
+
+        private final String headerClass;
+        private final String boxClass;
+
+        private BoxType(String boxClass, String headerClass) {
+            this.boxClass = PropUtils.get(boxClass);
+            this.headerClass = PropUtils.get(headerClass);
         }
-        throw new NoSuchElementException("Unable to found section with identifier: " + identifier);
+
+        public String getHeaderClass() {
+            return headerClass;
+        }
+
+        public String getBoxClass() {
+            return boxClass;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase() + " box";
+        }
     }
 
+    public HomepageTaskFragment getTaskBox(String identifier) {
+        return getBox(identifier, BoxType.TASK, HomepageTaskFragment.class);
+    }
 
-    public List<HomepageSectionFragment> getAllSections() {
-        String headerClass = PropUtils.get("homepage.section.class");
-        By selector = By.className(headerClass);
+    public HomepageInfoFragment getInfoBox(String identifier) {
+        return getBox(identifier, BoxType.INFO, HomepageInfoFragment.class);
+    }
 
-        List<WebElement> elements = browser.findElements(selector);
-        List<HomepageSectionFragment> sections = new ArrayList<HomepageSectionFragment>();
+    public <T extends BaseFragment> T getBox(String identifier, BoxType box, Class<T> clazz) {
+        Map<String, T> boxes = getAllBoxes(box, clazz);
 
-        for (WebElement element : elements) {
-            sections.add(Graphene.createPageFragment(HomepageSectionFragment.class, element));
+        T fragment = boxes.get(identifier.toLowerCase());
+
+        if (box == null){
+            throw new NoSuchElementException("Unable to found " + box + " with identifier: "
+                + identifier);
         }
 
-        return sections;
+        return fragment;
+    }
+
+    public <T extends BaseFragment> Map<String,T> getAllBoxes(BoxType box, Class<T> clazz) {
+        By selector = By.className(box.getBoxClass());
+
+        List<WebElement> elements = browser.findElements(selector);
+        Map<String, T> tasks = new HashMap<String, T>();
+
+        for (WebElement element : elements) {
+            By headerSelector = By.className(box.getHeaderClass());
+            WebElement header = element.findElement(headerSelector);
+
+            String id = header.getAttribute("id");
+            String[] classAttr = id.split("_"); // only prefix up to first "_"
+            String key = classAttr[box == BoxType.TASK ? 0 : classAttr.length -1].toLowerCase();
+            T task = Graphene.createPageFragment(clazz, element);
+
+            tasks.put(key, task);
+        }
+
+        return tasks;
     }
 
 
