@@ -8,6 +8,12 @@
         <property name="browser">${browser}</property>
     </extension>
 
+    <extension qualifier="screenshooter">
+        <property name="takeOnEveryAction">false</property>
+        <property name="takeBeforeTest">false</property>
+        <property name="takeAfterTest">true</property>
+        <property name="takeWhenTestFailed">true</property>
+    </extension>
 
     <extension qualifier="graphene">
         <property name="waitGuiInterval">3</property>
@@ -22,17 +28,13 @@
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}":
             </property>
-            <property name="serverConfig">${jboss.server.config.file.name:standalone-full-ha.xml}</property>
-            <!-- -Djboss.inst is not necessarily needed, only in case the test case needs path to the instance it runs in.
-In the future, Arquillian should capable of injecting it into @ArquillianResource File or such. -->
+            <property name="serverConfig">
+                ${jboss.server.config.file.name:standalone-full-ha.xml}
+            </property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
             <property name="managementAddress">${node0:127.0.0.1}</property>
             <property name="managementPort">${as.managementPort:9990}</property>
-
-            <!-- AS7-4070 -->
-            <!--<property name="waitForPorts">${as.debug.port:8787} ${as.managementPort:9990}</property>-->
-            <!--<property name="waitForPortsTimeoutInSeconds">8</property>-->
         </configuration>
     </container>
 
@@ -44,10 +46,6 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
             </property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
-
-            <!--property name="domainConfig">${jboss.domain.default.config:domain.xml}</property>
-            <property name="hostConfig">${jboss.host.default.config:host.xml}</property-->
-
             <property name="managementAddress">${node0:127.0.0.1}</property>
             <property name="managementPort">${as.managementPort:9999}</property>
         </configuration>
@@ -59,9 +57,9 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
             <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
-            <property name="serverConfig">${jboss.server.config.file.name:standalone-full-ha.xml}</property>
-            <!-- -Djboss.inst is not necessarily needed, only in case the test case needs path to the instance it runs in.
-    In the future, Arquillian should capable of injecting it into @ArquillianResource File or such. -->
+            <property name="serverConfig">
+                ${jboss.server.config.file.name:standalone-full-ha.xml}
+            </property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
             <property name="managementAddress">${node0:127.0.0.1}</property>
@@ -76,8 +74,6 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
                 -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
             </property>
             <property name="serverConfig">${jboss.server.config.file.name:standalone-full-ha.xml}</property>
-            <!-- -Djboss.inst is not necessarily needed, only in case the test case needs path to the instance it runs in.
-    In the future, Arquillian should capable of injecting it into @ArquillianResource File or such. -->
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
             <property name="managementAddress">${node0:127.0.0.1}</property>
@@ -93,10 +89,6 @@ In the future, Arquillian should capable of injecting it into @ArquillianResourc
             </property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="outputToConsole">true</property>
-
-            <!--property name="domainConfig">${jboss.domain.default.config:domain.xml}</property>
-            <property name="hostConfig">${jboss.host.default.config:host.xml}</property-->
-
             <property name="managementAddress">${node0:127.0.0.1}</property>
             <property name="managementPort">${as.managementPort:9999}</property>
         </configuration>
