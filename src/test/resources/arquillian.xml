@@ -11,7 +11,7 @@
     <extension qualifier="screenshooter">
         <property name="takeOnEveryAction">false</property>
         <property name="takeBeforeTest">false</property>
-        <property name="takeAfterTest">true</property>
+        <property name="takeAfterTest">false</property>
         <property name="takeWhenTestFailed">true</property>
     </extension>
 
