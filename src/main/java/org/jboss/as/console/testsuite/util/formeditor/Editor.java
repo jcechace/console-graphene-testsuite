@@ -93,7 +93,7 @@ public class Editor extends BaseFragment {
         WebElement fileInput = getFileInputElement(identifier);
         log.debug("uploading file '{}'", fileToUpload.toString());
         fileInput.sendKeys(fileToUpload.getAbsolutePath());
-        Graphene.waitGui().until().element(fileInput).value().equalTo(fileToUpload.getAbsolutePath());
+        Graphene.waitGui().until().element(fileInput).value().equalTo(fileToUpload.getName());
     }
 
 
