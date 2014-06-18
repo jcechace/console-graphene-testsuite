@@ -100,8 +100,6 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
             applyPatch(oneOffPatchSimple, true, true);
             verifyInstalledPatch(oneOffPatchName, true);
             log.debug("Verifying patch type");
-            Library.letsSleep(42000);
-
             ResourceTableRowFragment patchEntry = patchManagementPage.getResourceTable()
                     .getRowByText(0, oneOffPatchName);
             log.debug(patchEntry.getRoot().getText());
