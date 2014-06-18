@@ -5,6 +5,7 @@ import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +34,18 @@ public class PatchResultPanelFragment extends BaseFragment {
             By.className(PropUtils.get("runtime.patching.wizard.result.success.message.class"));
 
     /**
-     * @return whether result of patching process is displayed as success
+     * Decides whether the result of patching process is successful by checking the presence of
+     * error message.
+     *
+     * @return true if the result is successful
      */
     public boolean isSuccessful() {
-        return root.findElements(ERROR_MESSAGE_SELECTOR).isEmpty();
+        try {
+            Graphene.waitGui().until().element(ERROR_MESSAGE_SELECTOR).is().visible();
+            return false;
+        } catch (TimeoutException e) {
+            return true;
+        }
     }
 
     /**
