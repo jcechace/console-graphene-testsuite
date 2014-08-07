@@ -1,4 +1,4 @@
-package org.jboss.as.console.testsuite.tests.console.homepage;
+package org.jboss.as.console.testsuite.tests.homepage;
 
 import junit.framework.Assert;
 import org.jboss.arquillian.drone.api.annotation.Drone;
