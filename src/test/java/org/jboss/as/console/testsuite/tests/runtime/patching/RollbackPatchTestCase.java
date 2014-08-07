@@ -6,7 +6,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.config.patching.PatchingWizard;
 import org.jboss.as.console.testsuite.pages.runtime.PatchManagementPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
-import org.jboss.as.console.testsuite.tests.categories.StandaloneTest;
 import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.DomainCliClient;
