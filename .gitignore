@@ -6,3 +6,7 @@ release.properties
 # Intellij
 .idea/
 *.iml
+# Eclipse
+.classpath
+.project
+.settings/

@@ -11,7 +11,6 @@ import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.common.DomainManager;
-import org.jboss.qa.management.common.ServerUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
