@@ -12,7 +12,6 @@ import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.qa.management.cli.DomainCliClient;
 import org.jboss.qa.management.common.DomainManager;
-import org.jboss.qa.management.common.Library;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,9 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author rhatlapa (rhatlapa@redhat.com)
