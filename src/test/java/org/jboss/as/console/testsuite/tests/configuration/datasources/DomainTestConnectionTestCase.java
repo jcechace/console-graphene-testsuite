@@ -8,7 +8,7 @@ import org.jboss.as.console.testsuite.tests.util.CliProvider;
 import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.CliClient;
-import org.jboss.qa.management.common.DomainManagementCliUtils;
+import org.jboss.qa.management.common.DomainManager;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -29,6 +29,8 @@ public class DomainTestConnectionTestCase extends AbstractTestConnectionTestCase
 
     private static CliClient fullHaClient;
 
+    private static DomainManager domainManager;
+    
     private static Map<String, List<String>> domainState;
 
 
@@ -42,8 +44,9 @@ public class DomainTestConnectionTestCase extends AbstractTestConnectionTestCase
     public static void setup() {  // create needed datasources
         cliClient = CliProvider.getClient();
         fullHaClient = CliProvider.withProfile("full-ha");
+        domainManager = new DomainManager(cliClient);
 
-        domainState = DomainManagementCliUtils.listRunningServers(cliClient);
+        domainState = domainManager.listAllRunningServers();
 
         dsNameValid = DSTestUtils.createDatasource(cliClient, VALID_URL, false);
         dsSameNameValid = DSTestUtils.createDatasource(fullHaClient, VALID_URL, false);
@@ -58,7 +61,7 @@ public class DomainTestConnectionTestCase extends AbstractTestConnectionTestCase
         DSTestUtils.removeDatasource(fullHaClient, dsSameNameValid, false);
         DSTestUtils.removeDatasource(cliClient, dsSameNameInvalid, false);
 
-        DomainManagementCliUtils.restoreDomainState(cliClient, domainState, true);
+        domainManager.restoreDomainState(domainState, true);
     }
 
     @Before
@@ -75,20 +78,20 @@ public class DomainTestConnectionTestCase extends AbstractTestConnectionTestCase
 
     @Test
     public void testValidWithNoRunningServer() {
-        DomainManagementCliUtils.stopAllServers(cliClient, 10l);
+        domainManager.stopAllServers(10l);
         testConnection(dsNameValid, false);
     }
 
     @Test
     public void testInvalidWithSameName() {
-        DomainManagementCliUtils.startAllServers(cliClient, 10l);
+        domainManager.startAllServers(10l);
 
         testConnection(dsSameNameValid, false);
     }
 
     @Test
     public void testValidWithSameNameInOtherGroup() {
-        DomainManagementCliUtils.startAllServers(cliClient, 10l);
+        domainManager.startAllServers(10l);
         datasourcesPage.pickProfile("full-ha");
 
         testConnection(dsSameNameValid, true);
