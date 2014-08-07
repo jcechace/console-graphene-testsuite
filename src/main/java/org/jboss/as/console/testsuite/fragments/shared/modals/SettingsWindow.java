@@ -1,9 +1,6 @@
 package org.jboss.as.console.testsuite.fragments.shared.modals;
 
 import org.jboss.as.console.testsuite.fragments.WindowFragment;
-import org.jboss.arquillian.graphene.findby.ByJQuery;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 

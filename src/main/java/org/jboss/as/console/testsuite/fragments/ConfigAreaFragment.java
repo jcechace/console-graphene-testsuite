@@ -5,7 +5,6 @@ import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 
 /**
  * @author jcechace
