@@ -10,7 +10,9 @@
 
     <properties>
         <browser>firefox</browser>
-        <surefire.version>2.16</surefire.version>
+        <version.surefire>2.16</version.surefire>
+        <version.checkstyle-plugin>2.10</version.checkstyle-plugin>
+        <version.findbugs-plugin>2.5.5</version.findbugs-plugin>
     </properties>
 
     <dependencyManagement>
@@ -47,8 +49,6 @@
     </dependencyManagement>
 
     <dependencies>
-
-
         <dependency>
             <groupId>org.jboss.arquillian.selenium</groupId>
             <artifactId>selenium-bom</artifactId>
@@ -195,7 +195,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
+                <version>${version.surefire}</version>
                 <configuration>
                     <systemPropertyVariables>
                         <browser>${browser}</browser>
@@ -208,6 +208,48 @@
                         ${test.category}
                     </groups>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.checkstyle-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>check-style</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                        <configuration>
+                            <configLocation>checkstyle.xml</configLocation>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <useFile />
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <useFile />
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>finding-bugs</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>findbugs</goal>
+                        </goals>
+                        <configuration>
+                            <threshold>Low</threshold>
+                            <xmlOutput>true</xmlOutput>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
