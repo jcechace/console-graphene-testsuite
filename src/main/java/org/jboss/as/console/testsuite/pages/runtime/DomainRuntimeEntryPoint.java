@@ -12,5 +12,5 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  *
  */
 @Location("#domain-runtime")
-abstract public class DomainRuntimeEntryPoint extends BasePage {
+public abstract class DomainRuntimeEntryPoint extends BasePage {
 }

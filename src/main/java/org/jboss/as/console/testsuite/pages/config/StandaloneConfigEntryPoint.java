@@ -12,5 +12,5 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  *
  */
 @Location("#server")
-abstract public class StandaloneConfigEntryPoint extends BasePage {
+public abstract class StandaloneConfigEntryPoint extends BasePage {
 }

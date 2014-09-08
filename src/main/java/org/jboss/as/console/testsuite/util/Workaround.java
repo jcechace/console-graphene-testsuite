@@ -1,7 +1,10 @@
 package org.jboss.as.console.testsuite.util;
 
 import org.jboss.arquillian.graphene.Graphene;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +15,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Workaround {
     private WebDriver browser;
-    private TakesScreenshot screenshot;
 
     public static Workaround withBrowser(WebDriver browser) {
         Workaround workaround = new Workaround();

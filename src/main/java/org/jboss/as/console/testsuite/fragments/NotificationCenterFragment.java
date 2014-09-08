@@ -25,7 +25,7 @@ public class NotificationCenterFragment extends BaseFragment {
         String[] split = getText().split(" ");
         return Integer.valueOf(split[split.length - 1]);
     }
-    
+
     /**
      * Open popup window with messages by clicking on this element
      * @return opened popup window with messages

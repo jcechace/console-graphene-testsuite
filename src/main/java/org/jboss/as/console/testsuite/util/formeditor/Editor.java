@@ -18,7 +18,7 @@ import java.io.File;
 public class Editor extends BaseFragment {
 
     private static final Logger log = LoggerFactory.getLogger(Editor.class);
-    
+
     /**
      * Returns either a input of type text or textarea element with given identifier (name or id).
      *

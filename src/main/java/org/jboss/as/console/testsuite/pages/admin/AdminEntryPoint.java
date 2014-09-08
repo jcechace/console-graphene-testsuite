@@ -12,5 +12,5 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  *
  */
 @Location("#administration")
-abstract public class AdminEntryPoint extends BasePage {
+public abstract class AdminEntryPoint extends BasePage {
 }

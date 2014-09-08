@@ -14,7 +14,7 @@ import java.util.List;
  * Class implements pop-up fragment for switching host/server context in domain mode
  */
 public class ServerContextPicker extends PopUpFragment {
-    final static public ByJQuery BUTTON_SELECTOR = ByJQuery.selector(PropUtils.get("topology.server.switch.button"));
+    public static final ByJQuery BUTTON_SELECTOR = ByJQuery.selector(PropUtils.get("topology.server.switch.button"));
 
     /**
      * @param newContext new context (server/host) to set

@@ -26,8 +26,7 @@ public class HomepageSideBarFragment extends BaseFragment {
         List<WebElement> elements = getAllSectionElements();
         List<HomepageSideSectionFragment> sections = new ArrayList<HomepageSideSectionFragment>();
 
-        for (WebElement elem : elements)
-        {
+        for (WebElement elem : elements) {
             sections.add(Graphene.createPageFragment(HomepageSideSectionFragment.class, elem));
         }
 

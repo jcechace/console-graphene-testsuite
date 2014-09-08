@@ -17,7 +17,6 @@ public class MessageWindow extends WindowFragment {
     public String getDateString() {
 
         //return root.findElement(By.xpath("//h3/../text()")).getText();
-        //        
         //this is ugly but only WebElement can be found and xpath above would result to text node
         //text of parent element containing title element
         By xpath = By.xpath("//" + PropUtils.get("modals.window.content.title.tag") + "/..");
