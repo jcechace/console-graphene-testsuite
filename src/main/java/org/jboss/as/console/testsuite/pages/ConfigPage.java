@@ -3,6 +3,8 @@ package org.jboss.as.console.testsuite.pages;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.ConfigAreaFragment;
+import org.jboss.as.console.testsuite.fragments.WindowFragment;
+import org.jboss.as.console.testsuite.fragments.shared.modals.ConfirmationWindow;
 import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.AdvancedSelectBox;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
@@ -35,7 +37,8 @@ public class ConfigPage extends BasePage {
      * @return
      */
     public <T extends ConfigAreaFragment> T getConfig(Class<T> clazz) {
-        By selector = getConfigSelector(); // TODO: replace with proper selector once there is a usable class
+//        By selector = getConfigSelector(); // TODO: replace with proper selector once there is a usable class
+        By selector = ByJQuery.selector(".default-tabpanel:visible");
         WebElement configRoot = getContentRoot().findElement(selector);
         T config = Graphene.createPageFragment(clazz, configRoot);
 
@@ -79,6 +82,20 @@ public class ConfigPage extends BasePage {
 
     public WizardWindow addResource() {
         return addResource(WizardWindow.class);
+    }
+
+    public <T extends WindowFragment> T removeResource(String name, Class<T> clazz) {
+        selectByName(name);
+        String label = PropUtils.get("config.shared.remove.label");
+        clickButton(label);
+
+        T window = Console.withBrowser(browser).openedWindow(clazz);
+
+        return window;
+    }
+
+    public ConfirmationWindow removeResource(String name) {
+        return removeResource(name, ConfirmationWindow.class);
     }
 
     public void pickProfile(String label) {
@@ -126,4 +143,14 @@ public class ConfigPage extends BasePage {
 
         throw new NoSuchElementException("Unable to find context picker root");
     }
+
+    /**
+     * Select resource based on its name in firt column of resource table.
+     *
+     * @param name Name of the resource.
+     */
+    public void selectByName(String name) {
+        getResourceTable().selectRowByText(0, name);
+    }
+
 }

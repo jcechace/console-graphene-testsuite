@@ -10,11 +10,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by jcechace on 18/02/14.
  */
 public class WindowFragment extends BaseFragment {
+
+    private static final Logger log = LoggerFactory.getLogger(WindowFragment.class);
 
     public static final By ROOT_SELECTOR = By.className(PropUtils.get("modals.window.class"));
 
@@ -85,17 +89,12 @@ public class WindowFragment extends BaseFragment {
     }
 
     public void clickButton(String label) {
+        log.debug("Trying to click \"" + label + "\" button in current window");
         By selector = ByJQuery.selector("button:contains(" + label + "):visible");
         Graphene.waitGui().until().element(selector).is().visible();
         WebElement button = root.findElement(selector);
 
         button.click();
-    }
-
-    public Editor getEditor() {
-        Editor editor = Graphene.createPageFragment(Editor.class, root);
-
-        return editor;
     }
 
     public String getHeadTitle() {

@@ -11,10 +11,6 @@ import org.jboss.as.console.testsuite.pages.ConfigPage;
 
 @Location("#datasources")
 public class DatasourcesPage extends ConfigPage {
-    public void selectByName(String name) {
-        getResourceTable().selectRowByText(0, name);
-    }
-
     @Override
     public DatasourceConfigArea getConfig() {
         return getConfig(DatasourceConfigArea.class);

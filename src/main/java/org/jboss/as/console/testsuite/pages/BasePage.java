@@ -38,10 +38,11 @@ public abstract class BasePage {
 
     // SELECTORS
     private static By INFO_TABLE_SELECTOR = By.className(PropUtils.get("infotable.class"));
-    private static By SPLIT_ROOT_SELECTOR = ByJQuery.selector("." + PropUtils
-            .get("page.splitlayout.class") + ":visible");
-    private static By TAB_ROOT_SELECTOR   = ByJQuery.selector("." + PropUtils
-            .get("page.tablayout.class") + ":visible");
+
+    private static By ROOT_SELECTOR = ByJQuery.selector("#" + PropUtils
+            .get("page.content.id") + ":visible");
+    private static By PARENT_ROOT_SELECTOR = ByJQuery.selector("." + PropUtils
+            .get("page.content.parent.class") + ":visible");
 
     public HeaderTabs getHeaderNavigation() {
         return headerNavigation;
@@ -90,9 +91,9 @@ public abstract class BasePage {
     public WebElement getContentRoot() {
         WebElement contentRoot;
         try {
-            contentRoot = browser.findElement(TAB_ROOT_SELECTOR);
+            contentRoot = browser.findElement(ROOT_SELECTOR);
         } catch (NoSuchElementException e) {
-            contentRoot = browser.findElement(SPLIT_ROOT_SELECTOR);
+            contentRoot = browser.findElement(PARENT_ROOT_SELECTOR);
         }
 
         return contentRoot;

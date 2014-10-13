@@ -1,7 +1,9 @@
 package org.jboss.as.console.testsuite.fragments;
 
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.fragment.Root;
+import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -18,4 +20,11 @@ public class BaseFragment {
     public WebElement getRoot() {
         return root;
     }
+
+    public Editor getEditor() {
+        Editor editor = Graphene.createPageFragment(Editor.class, root);
+
+        return editor;
+    }
+
 }
