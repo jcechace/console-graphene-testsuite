@@ -62,7 +62,7 @@ public class IdpTrustedDomains extends IdpConfigAbstract {
         Editor editor = wizard.getEditor();
         editor.text("name", DOMAIN_GUI);
 
-        Assert.assertTrue("Add Trusted Domain wizard should not be open.", wizard.finish());
+        wizard.assertFinish(true);
 
         boolean exists = cliClient.executeForSuccess(DOMAIN_ADDR_GUI + ":read-resource");
         Assert.assertTrue("Added domain should exist", exists);
@@ -80,7 +80,7 @@ public class IdpTrustedDomains extends IdpConfigAbstract {
         Editor editor = wizard.getEditor();
         editor.text("name", "");
 
-        Assert.assertFalse("Add Trusted Domain wizard should not be finished.", wizard.finish());
+        wizard.assertFinish(false);
 
         wizard.cancel();
     }

@@ -68,7 +68,7 @@ public class FederationTestCase {
         WizardWindow wizardWindow = rm.addResource();
         Editor editor = wizardWindow.getEditor();
         editor.text("name", FEDERATION_GUI);
-        wizardWindow.finish();
+        wizardWindow.assertFinish(true);
 
         assertFederation(FEDERATION_GUI_ADDR, true);
     }

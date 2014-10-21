@@ -80,10 +80,12 @@ public class IdentityProviderTestCase {
     public void addExternalIdentityProvider() {
         ResourceManager rm = federationPage.getResourceManager();
         WizardWindow wizard = rm.addResource();
+
         Editor editor = wizard.getEditor();
         editor.checkbox("external", true);
         editor.text("url", "http://localhost:8080/foo");            //this URL does not exist
-        Assert.assertTrue("Wizard should be finished successfully and closed", wizard.finish());
+
+        wizard.assertFinish(true);
 
         boolean exists = cliClient.executeForSuccess(IDP_EXT_ADDR + ":read-resource()");
         Assert.assertTrue("Added IDP should exist", exists);
@@ -98,7 +100,8 @@ public class IdentityProviderTestCase {
         editor.checkbox("external", false);
         editor.select("name", IDP_WAR);
         editor.select("securityDomain", "other");
-        Assert.assertTrue("Wizard should be finished succesfully and closed", wizard.finish());
+
+        wizard.assertFinish(true);
 
         boolean exists = cliClient.executeForSuccess(IDP_ADDR + ":read-resource()");
         Assert.assertTrue("Added IDP should exist", exists);
