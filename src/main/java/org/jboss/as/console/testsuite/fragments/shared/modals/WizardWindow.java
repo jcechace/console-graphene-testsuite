@@ -4,6 +4,7 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.as.console.testsuite.fragments.WindowFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,10 @@ public class WizardWindow extends WindowFragment {
 
     /**
      * Clicks either Finish or Save button and wait's unit the wizard window is closed
+     *
+     * @return true if window is not present after the button was clicked
      */
-    public void finish() {
+    public boolean finish() {
         String label = PropUtils.get("modals.wizard.finish.label");
         try {
             clickButton(label);
@@ -38,9 +41,14 @@ public class WizardWindow extends WindowFragment {
             clickButton(label);
         }
 
-        Graphene.waitGui().withTimeout(30, TimeUnit.SECONDS).until().element(root).is().not().present();
+        try {
+            Graphene.waitModel().until().element(root).is().not().present();
+            closed = true;
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
 
-        closed = true;
     }
 
     /**

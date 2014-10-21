@@ -3,7 +3,6 @@ package org.jboss.as.console.testsuite.fragments;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.util.Console;
-import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.as.console.testsuite.util.Workaround;
 import org.openqa.selenium.By;

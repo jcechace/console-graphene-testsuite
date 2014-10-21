@@ -7,6 +7,7 @@ import org.jboss.as.console.testsuite.util.Console;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,37 @@ public class Editor extends BaseFragment {
         WebElement input = getText(identifier);
 
         return input.getAttribute("value");
+    }
+
+
+    private WebElement findSelect(String identifier) {
+        By selector = ByJQuery.selector(
+                "select[id$='" + identifier + "']," +
+                        "select[name='" + identifier + "'], "
+        );
+
+        return findElement(selector, root);
+    }
+
+    /**
+     * Sets the value of given select
+     * @param identifier
+     * @param value
+     */
+    public void select(String identifier, String value) {
+        Select select = new Select(findSelect(identifier));
+        select.selectByVisibleText(value);
+    }
+
+    /**
+     * Returns the value of select with given identifier
+     *
+     * @param identifier
+     * @return text of selected option
+     */
+    public String select(String identifier) {
+        Select select = new Select(findSelect(identifier));
+        return select.getFirstSelectedOption().getText();
     }
 
     /**

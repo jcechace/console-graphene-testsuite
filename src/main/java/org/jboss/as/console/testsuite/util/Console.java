@@ -165,7 +165,7 @@ public class Console {
 
     public <T extends ResourceTableFragment> T getTableByHeader(String label, Class<T> clazz,
                                                                 WebElement root) {
-        String cssClass = PropUtils.get("tables.default.class");
+        String cssClass = PropUtils.get("resourcetable.id");
 
         String tableSelector = "table[contains(@class, '" + cssClass + "')]";
         String headerSelector = "//th/descendant-or-self::*[contains(text(), '" + label + "')]";

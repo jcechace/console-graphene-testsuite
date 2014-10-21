@@ -4,7 +4,10 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 /**
  * @author jcechace
@@ -14,8 +17,15 @@ public class ConfigAreaFragment extends  BaseFragment {
     public WebElement getTabByLabel(String label) {
         String tabClass = PropUtils.get("configarea.tab.class");
         By selector = ByJQuery.selector("." + tabClass + ":contains('" + label + "')");
-        WebElement item = root.findElement(selector);
-        return item;
+        List<WebElement> items = root.findElements(selector);
+
+        for(WebElement item : items) {
+            if (item.isDisplayed()) {
+                return item;
+            }
+        }
+
+        throw new NoSuchElementException(selector.toString());
     }
 
     public void clickTabByLabel(String label) {

@@ -1,10 +1,14 @@
 package org.jboss.as.console.testsuite.fragments.shared.tables;
 
+import org.jboss.arquillian.graphene.Graphene;
+import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
+import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ResourceTableRowFragment extends BaseFragment {
 
@@ -23,5 +27,19 @@ public class ResourceTableRowFragment extends BaseFragment {
         List<WebElement> cells = root.findElements(selector);
 
         return cells.get(index);
+    }
+
+    /**
+     * clicks on the view option in this row
+     */
+    public void view() {
+        String label =  PropUtils.get("resourcepager.view.label");
+        By selector = ByJQuery.selector(
+                "." + PropUtils.get("resourcepager.textlink.class") +  ":contains('" + label + "')");
+
+        WebElement link = root.findElement(selector);
+        link.click();
+
+        Graphene.waitGui().withTimeout(1500, TimeUnit.MILLISECONDS);
     }
 }

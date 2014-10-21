@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
  */
 public class PagerFragment extends BaseFragment {
 
-    public static final String CLASS_NAME_PAGER = PropUtils.get("tables.pager.class");
+    public static final String CLASS_NAME_PAGER = PropUtils.get("resourcepager.pager.class");
     public static final int IDX_FIRST_PAGE = 0;
     public static final int IDX_PREVIOUS_PAGE = 1;
     public static final int IDX_PAGER_INFO = 2;
