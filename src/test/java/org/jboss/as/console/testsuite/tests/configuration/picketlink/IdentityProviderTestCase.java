@@ -68,6 +68,7 @@ public class IdentityProviderTestCase {
         Graphene.goTo(FederationPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
         federationPage.getResourceManager().viewByName(FEDERATION);
+        federationPage.switchToIdentityProvider();
     }
 
     @After
@@ -76,7 +77,7 @@ public class IdentityProviderTestCase {
     }
 
     @Test
-    public void addExternalIdentityManager() {
+    public void addExternalIdentityProvider() {
         ResourceManager rm = federationPage.getResourceManager();
         WizardWindow wizard = rm.addResource();
         Editor editor = wizard.getEditor();
@@ -89,7 +90,7 @@ public class IdentityProviderTestCase {
     }
 
     @Test
-    public void addIdentityManager() {
+    public void addIdentityProvider() {
         ResourceManager rm = federationPage.getResourceManager();
         WizardWindow wizard = rm.addResource();
 

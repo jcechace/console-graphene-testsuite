@@ -63,6 +63,7 @@ public class IdpConfigAbstract {
         Console.withBrowser(browser).waitUntilLoaded();
         ResourceManager rm = federationPage.getResourceManager();
         rm.viewByName(FEDERATION);
+        federationPage.switchToIdentityProvider();
     }
 
     @After
