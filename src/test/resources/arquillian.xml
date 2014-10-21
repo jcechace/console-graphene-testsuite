@@ -67,20 +67,6 @@
         </configuration>
     </container>
 
-    <container qualifier="eap-manual" mode="manual">
-        <configuration>
-            <property name="jbossHome">${jboss.dist}</property>
-            <property name="javaVmArguments">-Djava.net.preferIPv4Stack=true
-                -Djboss.inst="${jbossHome}" ${eap.jvm.additional.arguments:}
-            </property>
-            <property name="serverConfig">${jboss.server.config.file.name:standalone-full-ha.xml}</property>
-            <property name="allowConnectingToRunningServer">true</property>
-            <property name="outputToConsole">true</property>
-            <property name="managementAddress">${node0:127.0.0.1}</property>
-            <property name="managementPort">${as.managementPort:9999}</property>
-        </configuration>
-    </container>
-
     <container qualifier="eap-domain">
         <configuration>
             <property name="jbossHome">${jboss.dist}</property>
