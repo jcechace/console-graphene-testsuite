@@ -8,6 +8,7 @@ import org.jboss.arquillian.graphene.findby.FindByJQuery;
 import org.jboss.as.console.testsuite.fragments.MessageListEntry;
 import org.jboss.as.console.testsuite.fragments.NavigationFragment;
 import org.jboss.as.console.testsuite.fragments.NotificationCenterFragment;
+import org.jboss.as.console.testsuite.fragments.config.navigation.ViewNavigation;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
@@ -110,6 +111,25 @@ public abstract class BasePage {
 
         Graphene.waitAjax().until().element(selectorCurrent).is().present();
 
+    }
+
+    public ViewNavigation getViewNavigation() {
+        By selector = By.className(PropUtils.get("page.content.viewnav.class"));
+        WebElement root = getContentRoot().findElement(selector);
+
+        ViewNavigation viewNavigation = Graphene.createPageFragment(ViewNavigation.class, root);
+
+        return viewNavigation;
+    }
+
+    /**
+     * Switch the view tab on top of conent area (see for example messaging configuration pages)
+     *
+     * @param identifier
+     */
+    public void switchView(String identifier) {
+        ViewNavigation viewNavigation = getViewNavigation();
+        viewNavigation.switchView(identifier);
     }
 
     /**
