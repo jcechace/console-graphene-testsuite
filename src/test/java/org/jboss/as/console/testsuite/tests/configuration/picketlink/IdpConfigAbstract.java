@@ -4,6 +4,7 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.pages.config.FederationPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
@@ -60,7 +61,8 @@ public class IdpConfigAbstract {
         browser.navigate().refresh();
         Graphene.goTo(FederationPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
-        federationPage.viewByName(FEDERATION);
+        ResourceManager rm = federationPage.getResourceManager();
+        rm.viewByName(FEDERATION);
     }
 
     @After
