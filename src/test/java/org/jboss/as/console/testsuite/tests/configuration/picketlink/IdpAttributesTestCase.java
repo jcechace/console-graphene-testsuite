@@ -2,6 +2,7 @@ package org.jboss.as.console.testsuite.tests.configuration.picketlink;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.fragments.ConfigFragment;
+import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.junit.Assert;
@@ -67,7 +68,8 @@ public class IdpAttributesTestCase extends IdpConfigAbstract {
     private void saveAndVerify(ConfigFragment attrsConfig, String name, String value) {
         Assert.assertTrue("Unable to save config", attrsConfig.save());
 
-        attrsConfig.setDmrPath(IDP_ADDR);
-        attrsConfig.verifyAttribute(name, value, cliClient);
+        ResourceManager rm = federationPage.getResourceManager();
+        rm.setDmrPath(IDP_ADDR);
+        rm.verifyAttribute(name, value, cliClient);
     }
 }

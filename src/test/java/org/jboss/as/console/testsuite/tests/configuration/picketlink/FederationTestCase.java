@@ -101,9 +101,9 @@ public class FederationTestCase {
         Assert.assertTrue(samlConfig.save());
 
 
-        samlConfig.setDmrPath(SAML_CFG_ADDR);
-        samlConfig.verifyAttribute("tokenTimeout", "10", cliClient);
-        samlConfig.verifyAttribute("clockSkew", "12", cliClient);
+        rm.setDmrPath(SAML_CFG_ADDR);
+        rm.verifyAttribute("tokenTimeout", "10", cliClient);
+        rm.verifyAttribute("clockSkew", "12", cliClient);
     }
 
 
