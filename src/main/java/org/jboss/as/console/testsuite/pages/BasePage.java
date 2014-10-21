@@ -11,6 +11,7 @@ import org.jboss.as.console.testsuite.fragments.NotificationCenterFragment;
 import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
+import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -64,9 +65,32 @@ public abstract class BasePage {
         return footer;
     }
 
-    public void clickButton(String label) {
-        By selector = ByJQuery.selector("button#" + label + ", button:contains('" + label + "')");
+
+    /**
+     * Finds button in content area based on identifier
+     *
+     * @param identifier id or label
+     *
+     * @return the button element
+     */
+    public WebElement getButton(String identifier) {
+        By selector = ByJQuery.selector("" +
+                        "button#" + identifier + ":visible," +
+                        "button:contains('" + identifier + "'):visible"
+        );
         WebElement button = getContentRoot().findElement(selector);
+
+        return button;
+    }
+
+    /**
+     * Click on button with given identifier
+     *
+     * @param label either an id or label used to find the button
+     */
+    public void clickButton(String label) {
+        WebElement button = getButton(label);
+
         button.click();
     }
 
@@ -88,6 +112,11 @@ public abstract class BasePage {
 
     }
 
+    /**
+     * Find the content root of current page
+     *
+     * @returnthe content root
+     */
     public WebElement getContentRoot() {
         WebElement contentRoot;
         try {
@@ -139,5 +168,9 @@ public abstract class BasePage {
         InfoTable table = Graphene.createPageFragment(InfoTable.class, root);
 
         return table;
+    }
+
+    public ResourceManager getResourceManager() {
+        return Graphene.createPageFragment(ResourceManager.class, getContentRoot());
     }
 }
