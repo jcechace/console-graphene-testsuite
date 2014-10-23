@@ -23,52 +23,41 @@ import org.openqa.selenium.WebDriver;
  */
 @RunWith(Arquillian.class)
 @Category(SharedTest.class)
-public class IdpConfigAbstract {
+public class ConfiguredIdpAbstract extends ConfiguredFederationAbstract{
+
+    protected static CliClient cliClient = CliProvider.getClient();
 
     @Drone
     protected WebDriver browser;
     @Page
     protected FederationPage federationPage;
 
-    protected static CliClient cliClient = CliProvider.getClient();
-
-    public static final String FEDERATION = "test-federation";
+    // IdentityProvider
     public static final String IDP_WAR = "idp-post.war";
-    public static final String IDP_WAR_URL = "http://localhost:8080/idp/";
-    public static final String FEDERATION_ADDR = "/subsystem=picketlink-federation/federation=" + FEDERATION;
+    public static final String IDP_RESOURCE_PATH = "/picketlink/" + IDP_WAR;
+    public static final String IDP_WAR_URL = "http://example.com/idp/";
     public static final String IDP_ADDR = FEDERATION_ADDR + "/identity-provider=" + IDP_WAR;
 
 
     @BeforeClass
-    public static void setupClass() {
-        String deployment = IdentityProviderTestCase.class
-                .getResource("/picketlink/" + IDP_WAR).getPath();
-        cliClient.executeCommand("deploy " + deployment);
+    public static void deployIdp() {
+        String deployment = ConfiguredIdpAbstract.class.getResource(IDP_RESOURCE_PATH).getPath();
+        cliClient.executeCommand("deploy " + deployment + " --disabled");
     }
 
     @AfterClass
-    public static void tearDownClass() {
+    public static void undeployIdp() {
         cliClient.executeCommand("undeploy " + IDP_WAR);
+        cliClient.executeCommand(IDP_ADDR + ":remove()");
     }
 
     @Before
-    public void setup() {
-        cliClient.executeCommand(FEDERATION_ADDR + ":add()");
-        cliClient.executeCommand(IDP_ADDR + ":add(security-domain=\"other\", url=\"" + IDP_WAR_URL + "\")");
-    }
-
-    protected void setupNavigate() {
-        browser.navigate().refresh();
-        Graphene.goTo(FederationPage.class);
-        Console.withBrowser(browser).waitUntilLoaded();
-        ResourceManager rm = federationPage.getResourceManager();
-        rm.viewByName(FEDERATION);
-        federationPage.switchToIdentityProvider();
+    public void setupIdp() {
+        cliClient.executeCommand(IDP_ADDR + ":add(external=true, url=\"" + IDP_WAR_URL + "\")");
     }
 
     @After
-    public void tearDown() {
-        cliClient.executeCommand(FEDERATION_ADDR + ":remove()");
+    public void tearDownIdp() {
+        cliClient.executeCommand(IDP_ADDR + ":remove()");
     }
-
 }

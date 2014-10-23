@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Arquillian.class)
 @Category(SharedTest.class)
-public class IdpTrustedDomains extends IdpConfigAbstract {
+public class IdpTrustedDomains extends ConfiguredIdpAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(IdpTrustedDomains.class);
 
@@ -32,10 +32,15 @@ public class IdpTrustedDomains extends IdpConfigAbstract {
     public static final String DOMAIN_ADDR_GUI = IDP_ADDR + "/trust-domain=" + DOMAIN_GUI;
 
     @Before
-    public void setup() {
-        super.setup();
+    public void setupTrustedDomain() {
         cliClient.executeCommand(DOMAIN_ADDR + ":add()");
-        setupNavigate();
+        navigateToFederation();
+        federationPage.switchToIdentityProvider();
+    }
+
+    @After
+    public void tearDownTrustedDomain() {
+        cliClient.executeCommand(DOMAIN_ADDR + ":remove()");
     }
 
     @Test

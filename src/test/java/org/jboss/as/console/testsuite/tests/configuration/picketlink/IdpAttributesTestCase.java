@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Arquillian.class)
 @Category(SharedTest.class)
-public class IdpAttributesTestCase extends IdpConfigAbstract {
+public class IdpAttributesTestCase extends ConfiguredIdpAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(IdpAttributesTestCase.class);
 
     @Before
     public void setup() {
-        super.setup();
-        setupNavigate();
+        navigateToFederation();
+        federationPage.switchToIdentityProvider();
     }
 
     @Test
