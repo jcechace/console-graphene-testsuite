@@ -18,4 +18,8 @@ public class IdentityProviderConfigArea extends ConfigAreaFragment {
         return switchTo(label, ConfigFragment.class);
     }
 
+    public ConfigFragment samlConfig() {
+        String label = PropUtils.get("config.federation.idp.configarea.saml.tab.label");
+        return switchTo(label, ConfigFragment.class);
+    }
 }

@@ -3,6 +3,7 @@ package org.jboss.as.console.testsuite.pages.config;
 import org.jboss.arquillian.graphene.page.Location;
 import org.jboss.as.console.testsuite.fragments.config.federation.FederationConfigArea;
 import org.jboss.as.console.testsuite.fragments.config.federation.IdentityProviderConfigArea;
+import org.jboss.as.console.testsuite.fragments.config.federation.ServiceProviderConfigArea;
 import org.jboss.as.console.testsuite.pages.ConfigPage;
 import org.jboss.as.console.testsuite.util.PropUtils;
 
@@ -18,6 +19,10 @@ public class FederationPage extends ConfigPage {
 
     public IdentityProviderConfigArea getIdpConfig() {
         return getConfig(IdentityProviderConfigArea.class);
+    }
+
+    public ServiceProviderConfigArea getSpConfig() {
+        return getConfig(ServiceProviderConfigArea.class);
     }
 
     public void switchToIdentityProvider() {
