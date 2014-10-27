@@ -5,6 +5,8 @@ import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.as.console.testsuite.util.formeditor.Editor;
+import org.jboss.qa.management.cli.CliClient;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -15,7 +17,15 @@ import org.openqa.selenium.WebElement;
 public class ConfigFragment extends BaseFragment {
 
     public ResourceManager getResourceManager() {
-        return Graphene.createPageFragment(ResourceManager.class, root);
+        return getResourceManager(null, null);
+    }
+
+    public ResourceManager getResourceManager(String dmrPath, CliClient cliClient) {
+        ResourceManager rm = Graphene.createPageFragment(ResourceManager.class, root);
+        rm.setDmrPath(dmrPath);
+        rm.setCliClient(cliClient);
+
+        return rm;
     }
 
     public WebElement getEditButton() {
@@ -64,4 +74,56 @@ public class ConfigFragment extends BaseFragment {
         Graphene.waitModel().until().element(getEditButton()).is().visible();
     }
 
+
+
+    /**
+     * Calls  {@link #save()}  save} method and asserts the output
+     *
+     * @param expected <code>true</code>if wizard is expected to finish, <code>false</code> otherwise
+     */
+    public void saveAndAssert(boolean expected) {
+        boolean finished = this.save();
+
+        if (expected) {
+            Assert.assertTrue("Config was supposed to be saved successfully, read view should be active.", finished);
+        } else {
+            Assert.assertFalse("Config wasn't supposed to be saved, read-write view should be active.", finished);
+        }
+    }
+
+    public void textAttribute(ResourceManager rm, String name, String value, boolean save) {
+        textAttribute(rm, name, value, value, save);
+    }
+
+    public void textAttribute(ResourceManager rm, String name, String value, String expectedValue, boolean save) {
+        Editor editor = this.edit();
+        editor.text(name, value);
+        this.saveAndAssert(save);
+
+        rm.verifyAttribute(name, expectedValue);
+    }
+
+    public void selectAttribute(ResourceManager rm, String name, String value, boolean save) {
+        selectAttribute(rm, name, value, value, save);
+    }
+
+    public void selectAttribute(ResourceManager rm, String name, String value, String expectedValue, boolean save) {
+        Editor editor = this.edit();
+        editor.select(name, value);
+        this.saveAndAssert(save);
+
+        rm.verifyAttribute(name, expectedValue);
+    }
+
+    public void checkboxAttribute(ResourceManager rm, String name, boolean value, boolean save) {
+        checkboxAttribute(rm, name, value, value, save);
+    }
+
+    public void checkboxAttribute(ResourceManager rm, String name, boolean value, boolean expectedValue, boolean save) {
+        Editor editor = this.edit();
+        editor.checkbox(name, value);
+        this.saveAndAssert(save);
+
+        rm.verifyAttribute(name, String.valueOf(expectedValue));
+    }
 }
