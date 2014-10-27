@@ -33,6 +33,8 @@ public class ConfiguredSpAbstract extends ConfiguredIdpAbstract{
     public static final String SP_WAR = "sp-post1.war";
     public static final String SP_RESOURCE_PATH = "/picketlink/" + SP_WAR;
     public static final String SP_ADDR = FEDERATION_ADDR +"/service-provider=" + SP_WAR;
+    public static final String SP_URL = "http://example.com/sp/";
+
 
 
     @BeforeClass
@@ -50,7 +52,7 @@ public class ConfiguredSpAbstract extends ConfiguredIdpAbstract{
     @Before
     public void setupSp() {
         cliClient.executeCommand(SP_ADDR + ":add(security-domain=\"jboss-web-policy\", " +
-                "url=\"http://example.com/sp/\")");
+                "url=\"" + SP_URL  + "\")");
     }
 
     @After

@@ -12,4 +12,9 @@ public class ServiceProviderConfigArea extends ConfigAreaFragment {
         String label = PropUtils.get("config.federation.sp.configarea.attrs.tab.label");
         return switchTo(label, ConfigFragment.class);
     }
+
+    public ConfigFragment samlConfig() {
+        String label = PropUtils.get("config.federation.sp.configarea.saml.tab.label");
+        return switchTo(label, ConfigFragment.class);
+    }
 }
