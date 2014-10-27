@@ -24,11 +24,11 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Arquillian.class)
 @Category(SharedTest.class)
-public class IdpProviderTestCase extends ConfiguredFederationAbstract {
+public class IdpTestCase extends ConfiguredFederationAbstract {
 
     private static CliClient cliClient = CliProvider.getClient();
 
-    private static final Logger log = LoggerFactory.getLogger(IdpProviderTestCase.class);
+    private static final Logger log = LoggerFactory.getLogger(IdpTestCase.class);
 
     public static final String IDP_WAR = "idp-post.war";
     public static final String IDP_RESOURCE_PATH = "/picketlink/" + IDP_WAR;
@@ -41,7 +41,7 @@ public class IdpProviderTestCase extends ConfiguredFederationAbstract {
 
     @BeforeClass
     public static void setupIdentityProvider() {
-        String deployment = IdpProviderTestCase.class.getResource(IDP_RESOURCE_PATH).getPath();
+        String deployment = IdpTestCase.class.getResource(IDP_RESOURCE_PATH).getPath();
         cliClient.executeCommand("deploy " + deployment + " --disabled");
     }
 
