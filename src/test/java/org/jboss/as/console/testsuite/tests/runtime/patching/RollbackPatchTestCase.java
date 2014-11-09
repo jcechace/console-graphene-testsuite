@@ -45,7 +45,7 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
         if (ConfigUtils.isDomain()) {
-            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+            patchManagementPage.getResourceManager().viewByName(((DomainCliClient) cliClient).getDomainHost());
         }
     }
 
@@ -114,6 +114,11 @@ public class RollbackPatchTestCase extends PatchTestCaseAbstract{
     }
 
     private void rollbackPatch(String patchName, boolean expectedResult, boolean withServerRestart) {
+        Graphene.goTo(PatchManagementPage.class);
+        Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.getResourceManager().viewByName(((DomainCliClient) cliClient).getDomainHost());
+        }
         PatchingWizard rollbackPatchWizard = patchManagementPage.rollbackPatch(patchName);
         try {
             if(ConfigUtils.isDomain()) {

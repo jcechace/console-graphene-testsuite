@@ -52,7 +52,7 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
         Console.withBrowser(browser).waitUntilLoaded();
 
         if (ConfigUtils.isDomain()) {
-            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+            patchManagementPage.getResourceManager().viewByName(((DomainCliClient) cliClient).getDomainHost());
         }
     }
 
@@ -156,6 +156,10 @@ public class ApplyPatchTestCase extends PatchTestCaseAbstract {
         log.debug("Navigating to patch management.");
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitForContent();
+
+        if (ConfigUtils.isDomain()) {
+            patchManagementPage.getResourceManager().viewByName(((DomainCliClient) cliClient).getDomainHost());
+        }
 
         Assert.assertEquals(patchName + " is visible in console:", expectedResult,
                 patchManagementPage.getResourceTable().getRowByText(0, patchName) != null);

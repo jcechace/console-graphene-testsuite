@@ -37,7 +37,7 @@ public class RestartAfterPatchTestCase extends PatchTestCaseAbstract {
         Graphene.goTo(PatchManagementPage.class);
         Console.withBrowser(browser).waitUntilLoaded();
         if (ConfigUtils.isDomain()) {
-            patchManagementPage.pickHost(((DomainCliClient) cliClient).getDomainHost());
+            patchManagementPage.getResourceManager().viewByName(((DomainCliClient) cliClient).getDomainHost());
         }
 
         patchCliManager = new PatchManager(cliClient, false);
