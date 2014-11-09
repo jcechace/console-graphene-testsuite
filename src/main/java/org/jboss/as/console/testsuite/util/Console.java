@@ -11,6 +11,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +20,9 @@ import java.util.List;
  * Created by jcechace on 18/02/14.
  */
 public class Console {
+
+    private static final Logger log = LoggerFactory.getLogger(Console.class);
+
     private WebDriver browser;
 
     public static Console withBrowser(WebDriver browser) {
@@ -165,7 +170,7 @@ public class Console {
 
     public <T extends ResourceTableFragment> T getTableByHeader(String label, Class<T> clazz,
                                                                 WebElement root) {
-        String cssClass = PropUtils.get("resourcetable.id");
+        String cssClass = PropUtils.get("resourcetable.class");
 
         String tableSelector = "table[contains(@class, '" + cssClass + "')]";
         String headerSelector = "//th/descendant-or-self::*[contains(text(), '" + label + "')]";
@@ -194,6 +199,9 @@ public class Console {
         if (root == null) {
             element = browser.findElement(selector);
         } else {
+            if (!root.isDisplayed()) {
+                log.warn("Looking for element in hidden root!");
+            }
             element = root.findElement(selector);
         }
         return element;

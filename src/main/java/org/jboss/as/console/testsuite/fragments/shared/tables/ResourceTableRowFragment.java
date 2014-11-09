@@ -1,5 +1,6 @@
 package org.jboss.as.console.testsuite.fragments.shared.tables;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
@@ -33,11 +34,17 @@ public class ResourceTableRowFragment extends BaseFragment {
      * clicks on the view option in this row
      */
     public void view() {
-        String label =  PropUtils.get("resourcepager.view.label");
-        By selector = ByJQuery.selector(
-                "." + PropUtils.get("resourcepager.textlink.class") +  ":contains('" + label + "')");
+        WebElement link = null;
+        try {
+            By selector = ByJQuery.selector("." + PropUtils.get("resourcepager.viewlink.class"));
+            link = root.findElement(selector);
+        } catch (ElementNotFoundException e) {
+            String label =  PropUtils.get("resourcepager.view.label");
+            String cssClass = PropUtils.get("resourcepager.textlink.class");
+            By selector = ByJQuery.selector("." + cssClass +  ":contains('" + label + "')");
+            link = root.findElement(selector);
+        }
 
-        WebElement link = root.findElement(selector);
         link.click();
 
         Graphene.waitGui().withTimeout(1500, TimeUnit.MILLISECONDS);

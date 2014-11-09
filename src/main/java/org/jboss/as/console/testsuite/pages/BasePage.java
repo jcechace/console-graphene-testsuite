@@ -13,9 +13,11 @@ import org.jboss.as.console.testsuite.fragments.shared.layout.Footer;
 import org.jboss.as.console.testsuite.fragments.shared.layout.HeaderTabs;
 import org.jboss.as.console.testsuite.fragments.shared.tables.InfoTable;
 import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
+import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.jboss.qa.management.cli.CliClient;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -201,5 +203,21 @@ public abstract class BasePage {
         rm.setCliClient(cliClient);
 
         return rm;
+    }
+
+    /**
+     * Navigates to page url
+     *
+     */
+    public void navigate() {
+        Graphene.goTo(this.getClass());
+        Console.withBrowser(browser).waitUntilLoaded();
+    }
+
+    /**
+     * Scrolls to the bottom portion of page by sendind a PAGE_DOWN key to content root.
+     */
+    public void pageDown() {
+        getContentRoot().sendKeys(Keys.PAGE_DOWN);
     }
 }

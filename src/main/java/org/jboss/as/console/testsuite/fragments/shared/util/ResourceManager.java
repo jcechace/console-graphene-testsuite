@@ -34,7 +34,8 @@ public class ResourceManager extends BaseFragment {
     }
 
     public ResourceTableFragment getResourceTable() {
-        By selector = ByJQuery.selector("#master_detail-master:visible");
+        String cssClass = PropUtils.get("resourcetable.class");
+        By selector = ByJQuery.selector("." + cssClass + ":visible");
         WebElement tableRoot = getRoot().findElement(selector);
         ResourceTableFragment table = Graphene.createPageFragment(ResourceTableFragment.class, tableRoot);
 

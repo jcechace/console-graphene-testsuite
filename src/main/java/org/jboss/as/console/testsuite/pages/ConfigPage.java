@@ -4,11 +4,12 @@ import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.ConfigAreaFragment;
 import org.jboss.as.console.testsuite.fragments.WindowFragment;
-import org.jboss.as.console.testsuite.fragments.shared.modals.ConfirmationWindow;
-import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableFragment;
 import org.jboss.as.console.testsuite.fragments.shared.modals.AdvancedSelectBox;
+import org.jboss.as.console.testsuite.fragments.shared.modals.ConfirmationWindow;
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
+import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableFragment;
 import org.jboss.as.console.testsuite.fragments.shared.tables.ResourceTableRowFragment;
+import org.jboss.as.console.testsuite.pages.config.DomainConfigEntryPoint;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
@@ -33,7 +34,8 @@ public class ConfigPage extends BasePage {
 
         WebElement configRoot = null;
         try {
-            By selector = ByJQuery.selector("#master_detail-detail:visible");
+            String cssClass = PropUtils.get("configarea.class");
+            By selector = ByJQuery.selector("." + cssClass + ":visible");
             configRoot = getContentRoot().findElement(selector);
         } catch (NoSuchElementException e) { // TODO: this part should be removed once ensured the ID is everywhere
             List<WebElement> elements = getContentRoot().findElements(getConfigSelector());
@@ -90,12 +92,12 @@ public class ConfigPage extends BasePage {
     }
 
     public AdvancedSelectBox getHostPicker() {
-        return  getContextPicker("host");
+        return getContextPicker(PropUtils.get("navigation.context.host.id"));
     }
 
 
     public AdvancedSelectBox getProfilePicker() {
-        return  getContextPicker("profile");
+        return getContextPicker(PropUtils.get("navigation.context.profile.id"));
     }
 
     private AdvancedSelectBox getContextPicker(String label) {
@@ -108,22 +110,15 @@ public class ConfigPage extends BasePage {
     }
 
     private WebElement getContextPickerRootByLabel(String label) {
-        By selector = By.className(PropUtils.get("navigation.selector.class"));
-        By pickerSelector = By.className(PropUtils.get("components.selectbox.class"));
-        List<WebElement> elements = browser.findElements(selector);
-        for (WebElement elem : elements) {
-            if (elem.getText().toLowerCase().contains(label.toLowerCase())) {
-                WebElement pickerRoot = elem.findElement(pickerSelector);
-                return pickerRoot;
-            }
-        }
-
-        throw new NoSuchElementException("Unable to find context picker root");
+        By selector = By.id(label);
+        WebElement element = browser.findElement(selector);
+        return element;
     }
 
     @Deprecated
     public ResourceTableFragment getResourceTable() {
-        By selector = ByJQuery.selector("#master_detail-master:visible");
+        String cssClass = PropUtils.get("resourcetable.class");
+        By selector = ByJQuery.selector("." + cssClass + ":visible");
         WebElement tableRoot = getContentRoot().findElement(selector);
         ResourceTableFragment table = Graphene.createPageFragment(ResourceTableFragment.class, tableRoot);
 
@@ -179,4 +174,10 @@ public class ConfigPage extends BasePage {
         row.view();
     }
 
+    public void navigate(String profile) {
+        Graphene.goTo(DomainConfigEntryPoint.class);
+        Console.withBrowser(browser).waitUntilLoaded();
+        pickProfile(profile);
+        navigate();
+    }
 }
