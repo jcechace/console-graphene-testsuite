@@ -6,6 +6,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.console.testsuite.pages.config.FederationPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.qa.management.cli.CliClient;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,23 +32,9 @@ public class ConfiguredSpAbstract extends ConfiguredIdpAbstract{
 
     // Service Provider
     public static final String SP_WAR = "sp-post1.war";
-    public static final String SP_RESOURCE_PATH = "/picketlink/" + SP_WAR;
     public static final String SP_ADDR = FEDERATION_ADDR +"/service-provider=" + SP_WAR;
     public static final String SP_URL = "http://example.com/sp/";
 
-
-
-    @BeforeClass
-    public static void deploySp() {
-        String deployment = ConfiguredSpAbstract.class.getResource(SP_RESOURCE_PATH).getPath();
-        cliClient.executeCommand("deploy " + deployment + " --disabled");
-    }
-
-    @AfterClass
-    public static void undeploySp() {
-        cliClient.executeCommand("undeploy " + SP_WAR);
-        cliClient.executeCommand(SP_ADDR + ":remove()");
-    }
 
     @Before
     public void setupSp() {

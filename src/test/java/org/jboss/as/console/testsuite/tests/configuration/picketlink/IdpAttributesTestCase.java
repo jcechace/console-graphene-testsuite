@@ -22,6 +22,8 @@ public class IdpAttributesTestCase extends ConfiguredIdpAbstract {
 
     private static final Logger log = LoggerFactory.getLogger(IdpAttributesTestCase.class);
 
+    public static final String IDP_URL = "http://example.net/changed-idp/";
+
     @Before
     public void setup() {
         navigateToFederation();
@@ -43,9 +45,9 @@ public class IdpAttributesTestCase extends ConfiguredIdpAbstract {
         ConfigFragment attrsConfig = getAttrsConfig();
 
         Editor editor = attrsConfig.edit();
-        editor.text("url", "http://example.net/idp");
+        editor.text("url", IDP_URL);
 
-        saveAndVerify(attrsConfig, "url", "http://example.net/idp");
+        saveAndVerify(attrsConfig, "url", IDP_URL);
     }
 
     @Test
@@ -60,8 +62,6 @@ public class IdpAttributesTestCase extends ConfiguredIdpAbstract {
 
     private ConfigFragment getAttrsConfig() {
         ConfigFragment attrsConfig = federationPage.getIdpConfig().attrsConfig();
-        attrsConfig.cancel();       // TODO: remove once issue is resolved  (read-write mode by default)
-
         return attrsConfig;
     }
 

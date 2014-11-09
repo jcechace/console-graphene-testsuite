@@ -12,6 +12,7 @@ import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.pages.config.FederationPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.jboss.qa.management.cli.CliClient;
@@ -24,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author jcechace
@@ -51,9 +54,11 @@ public class FederationTestCase {
     public void setup() {
         cliClient.executeCommand(FEDERATION_ADDR + ":add()");
 
-        browser.navigate().refresh();
-        Graphene.goTo(FederationPage.class);
-        Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            federationPage.navigate("full");
+        } else {
+            federationPage.navigate();
+        }
     }
 
     @After

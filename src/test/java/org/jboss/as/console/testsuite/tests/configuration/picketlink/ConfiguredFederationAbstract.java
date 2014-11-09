@@ -8,8 +8,10 @@ import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.pages.config.FederationPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.CliClient;
+import org.jboss.security.auth.login.ConfigUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
@@ -48,8 +50,11 @@ public class ConfiguredFederationAbstract {
 
     protected void navigateToFederation() {
         browser.navigate().refresh();
-        Graphene.goTo(FederationPage.class);
-        Console.withBrowser(browser).waitUntilLoaded();
+        if (ConfigUtils.isDomain()) {
+            federationPage.navigate("full");
+        } else {
+            federationPage.navigate();
+        }
         ResourceManager rm = federationPage.getResourceManager();
         rm.viewByName(FEDERATION);
     }

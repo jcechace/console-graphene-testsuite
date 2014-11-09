@@ -8,6 +8,7 @@ import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.pages.config.FederationPage;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.Console;
 import org.jboss.qa.management.cli.CliClient;
 import org.junit.After;
@@ -34,26 +35,13 @@ public class ConfiguredIdpAbstract extends ConfiguredFederationAbstract{
 
     // IdentityProvider
     public static final String IDP_WAR = "idp-post.war";
-    public static final String IDP_RESOURCE_PATH = "/picketlink/" + IDP_WAR;
     public static final String IDP_WAR_URL = "http://example.com/idp/";
     public static final String IDP_ADDR = FEDERATION_ADDR + "/identity-provider=" + IDP_WAR;
 
 
-    @BeforeClass
-    public static void deployIdp() {
-        String deployment = ConfiguredIdpAbstract.class.getResource(IDP_RESOURCE_PATH).getPath();
-        cliClient.executeCommand("deploy " + deployment + " --disabled");
-    }
-
-    @AfterClass
-    public static void undeployIdp() {
-        cliClient.executeCommand("undeploy " + IDP_WAR);
-        cliClient.executeCommand(IDP_ADDR + ":remove()");
-    }
-
     @Before
     public void setupIdp() {
-        cliClient.executeCommand(IDP_ADDR + ":add(external=true, url=\"" + IDP_WAR_URL + "\")");
+        cliClient.executeCommand(IDP_ADDR + ":add(security-domain=\"jboss-web-policy\", url=\"" + IDP_WAR_URL + "\")");
     }
 
     @After

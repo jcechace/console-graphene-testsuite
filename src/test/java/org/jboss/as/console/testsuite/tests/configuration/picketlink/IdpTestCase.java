@@ -6,6 +6,7 @@ import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
 import org.jboss.as.console.testsuite.tests.util.CliProvider;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.jboss.qa.management.cli.CliClient;
 import org.junit.After;
@@ -31,24 +32,11 @@ public class IdpTestCase extends ConfiguredFederationAbstract {
     private static final Logger log = LoggerFactory.getLogger(IdpTestCase.class);
 
     public static final String IDP_WAR = "idp-post.war";
-    public static final String IDP_RESOURCE_PATH = "/picketlink/" + IDP_WAR;
-    public static final String IDP_WAR_URL = "http://localhost:8080/idp/";
     public static final String IDP_ADDR = FEDERATION_ADDR + "/identity-provider=" + IDP_WAR;
     public static final String IDP_EXT = FEDERATION + "-external-idp";
     public static final String IDP_EXT_URL = "http://examplecom/external-idp/";
     public static final String IDP_EXT_ADDR = FEDERATION_ADDR + "/identity-provider=" + IDP_EXT;
 
-
-    @BeforeClass
-    public static void setupIdentityProvider() {
-        String deployment = IdpTestCase.class.getResource(IDP_RESOURCE_PATH).getPath();
-        cliClient.executeCommand("deploy " + deployment + " --disabled");
-    }
-
-    @AfterClass
-    public static void tearDownIdentityProvider() {
-        cliClient.executeCommand("undeploy " + IDP_WAR);
-    }
 
     @Before
     public void setup() {
@@ -84,7 +72,7 @@ public class IdpTestCase extends ConfiguredFederationAbstract {
 
         Editor editor = wizard.getEditor();
         editor.checkbox("external", false);
-        editor.select("name", IDP_WAR);
+        editor.text("name", IDP_WAR);
         editor.select("securityDomain", "other");
 
         wizard.assertFinish(true);

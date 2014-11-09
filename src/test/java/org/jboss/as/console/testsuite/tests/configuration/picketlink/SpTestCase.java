@@ -5,6 +5,7 @@ import org.jboss.as.console.testsuite.fragments.shared.modals.ConfirmationWindow
 import org.jboss.as.console.testsuite.fragments.shared.modals.WizardWindow;
 import org.jboss.as.console.testsuite.fragments.shared.util.ResourceManager;
 import org.jboss.as.console.testsuite.tests.categories.SharedTest;
+import org.jboss.as.console.testsuite.tests.util.ConfigUtils;
 import org.jboss.as.console.testsuite.util.formeditor.Editor;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,18 +33,6 @@ public class SpTestCase extends ConfiguredSpAbstract {
     public static final String SP_GUI_URL = "http://example.com/sp-gui/";
 
 
-
-    @BeforeClass
-    public static void deployServiceProvider2() {
-        String deployment = SpTestCase.class.getResource(SP_RESOURCE_PATH).getPath();
-        cliClient.executeCommand("deploy " + deployment +" --name=" + SP_GUI_WAR + " --disabled");
-    }
-
-    @AfterClass
-    public static void undeployServiceProvide2r() {
-        cliClient.executeCommand("undeploy " + SP_GUI_WAR);
-    }
-
     @Before
     public void setup() {
         navigateToFederation();
@@ -62,7 +51,7 @@ public class SpTestCase extends ConfiguredSpAbstract {
         WizardWindow wizard = rm.addResource();
 
         Editor editor = wizard.getEditor();
-        editor.select("name", SP_GUI_WAR);
+        editor.text("name", SP_GUI_WAR);
         editor.select("securityDomain", "jboss-web-policy");
         editor.text("url", SP_GUI_URL);
 
@@ -84,15 +73,15 @@ public class SpTestCase extends ConfiguredSpAbstract {
         Editor editor = wizard.getEditor();
         wizard.assertFinish(false);
 
-        editor.select("name", SP_GUI_WAR);
+        editor.text("name", SP_GUI_WAR);
         wizard.assertFinish(false);
 
-        editor.select("name", "");
+        editor.text("name", "");
         editor.select("securityDomain", "jboss-web-policy");
         wizard.assertFinish(false);
 
 
-        editor.select("name", SP_GUI_WAR);
+        editor.text("name", SP_GUI_WAR);
         editor.text("url", "");
 
         wizard.assertFinish(true);

@@ -80,8 +80,6 @@ public class SpAttributesTestCase extends ConfiguredSpAbstract {
 
     private ConfigFragment getAttrsConfig() {
         ConfigFragment attrsConfig = federationPage.getSpConfig().attrsConfig();
-        attrsConfig.cancel();       // TODO: remove once issue is resolved  (read-write mode by default)
-
         return attrsConfig;
     }
 
