@@ -150,9 +150,6 @@
                     org.jboss.as.console.testsuite.tests.categories.StandaloneTest
                 </test.category>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.as</groupId>
