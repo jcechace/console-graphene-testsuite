@@ -205,7 +205,7 @@ public class Editor extends BaseFragment {
     }
 
     private WebElement findInputElement(String type, String identifier) {
-        log.trace("looking for the '{}' input element identified by '{}'", type, identifier);
+        log.debug("looking for the '{}' input element identified by '{}'", type, identifier);
 
         String byIdSelector = "input[type='" + type + "'][id$='" + identifier + "'], ";
         String byNameSelector = "input[type='" + type + "'][name='" + identifier + "'], ";
