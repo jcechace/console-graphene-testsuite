@@ -1,11 +1,11 @@
 package org.jboss.as.console.testsuite.fragments.shared.tables;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.graphene.findby.ByJQuery;
 import org.jboss.as.console.testsuite.fragments.BaseFragment;
 import org.jboss.as.console.testsuite.util.PropUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class ResourceTableRowFragment extends BaseFragment {
         try {
             By selector = ByJQuery.selector("." + PropUtils.get("resourcepager.viewlink.class"));
             link = root.findElement(selector);
-        } catch (ElementNotFoundException e) {
+        } catch (NoSuchElementException e) {
             String label =  PropUtils.get("resourcepager.view.label");
             String cssClass = PropUtils.get("resourcepager.textlink.class");
             By selector = ByJQuery.selector("." + cssClass +  ":contains('" + label + "')");
