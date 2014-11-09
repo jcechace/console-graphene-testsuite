@@ -12,5 +12,5 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  *
  */
 @Location("#hosts")
-public abstract class DomainEntryPoint extends BasePage {
+public class DomainEntryPoint extends BasePage {
 }

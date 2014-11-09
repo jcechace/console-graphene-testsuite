@@ -12,5 +12,5 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  *
  */
 @Location("#standalone-runtime")
-public abstract class StandaloneRuntimeEntryPoint extends BasePage {
+public class StandaloneRuntimeEntryPoint extends BasePage {
 }

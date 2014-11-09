@@ -11,6 +11,6 @@ import org.jboss.as.console.testsuite.pages.BasePage;
  * that the actual landing page is determined by console and may change in the future.
  *
  */
-@Location("#server")
-public abstract class StandaloneConfigEntryPoint extends BasePage {
+@Location("#profile")
+public class StandaloneConfigEntryPoint extends BasePage {
 }
